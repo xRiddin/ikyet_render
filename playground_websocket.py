@@ -73,7 +73,6 @@ class PlayGrd:
 
         else:
             resp = await gpt(syst, self.prompt, )
-            await self.websocket.send_json({"type": "output", "output": resp})
             return resp
 
     async def web_re(self):
