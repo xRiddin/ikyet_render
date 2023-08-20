@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0"/>
+    <meta name="description" content="A conversational AI system that listens, learns, and codes"/>
+    <meta property="og:title" content="CHATGPT"/>
+    <meta property="og:image" content="https://openai.com/content/images/2022/11/ChatGPT.jpg"/>
+    <meta
+            property="og:description"
+            content="A conversational AI system that listens, learns, and codes"/>
+    <meta property="og:url" content="https://chat.acy.dev"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png"/>
+    <link rel="manifest" href="images/site.webmanifest"/>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@latest/dist/markdown-it.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/base16/dracula.min.css"/>
+    <title>IKYET</title>
+</head>
+
+<body data-urlprefix="{{ url_prefix }}">
+<nav class="navbar">
+    <div class="logo">
+        <a href="#">Logo</a>
+    </div>
+    <div class="heading">
+        <h1 style="text-align-all: center; font-family: 'Arial Rounded MT Bold',serif">IKYET</h1>
+    </div>
+    <ul class="nav-links">
+        <li><a href="/IKYET/ikyet_render/static">Home</a></li>
+        <li><a href="/pw.html">Playground</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+</nav>
+<div class="main-container">
+    <div class="box sidebar">
+        <div class="top">
+            <div class="spinner"></div>
+        </div>
+        <form id="fileForm" enctype="multipart/form-data">
+            <input type="file" name="file" id="fileInput" multiple="multiple" style="display: none;"/>
+            <button type="button" id="submitButton" onclick="openFileExplorer()">
+                <span>INPUT</span>
+                <i class="fa-regular fa-plus"></i>
+            </button>
+            <button type="submit" id="uploadButton" onclick="processFile()">
+                <span>submit</span>
+            </button>
+        </form>
+
+        <div class="output-block" id="outputBlock">
+            <span>Output files</span>
+            <ul id="fileList"></ul>
+            <!-- Output will be displayed here -->
+        </div>
+        <div class="sidebar-footer">
+            <button class="button" onclick="delete_conversations()">
+                <i class="fa-regular fa-trash"></i>
+                <span>Clear Conversations</span>
+            </button>
+            <div class="field checkbox theme-toggler-container">
+                <input type="checkbox" id="theme-toggler"/>
+                <label for="theme-toggler"></label>
+                <span>Dark Mode</span>
+            </div>
+            <a class="info" href="https://github.com/xRiddin/" target="_blank">
+                <i class="fa-brands fa-github"></i>
+                <span class="conversation-title">
+							Version: 1-Alpha
+						</span>
+            </a>
+        </div>
+    </div>
+    <div class="conversation">
+        <div class="stop-generating stop-generating-hidden">
+            <button class="button" id="cancelButton">
+                <span>Stop Generating</span>
+            </button>
+        </div>
+        <div class="box" id="messages">
+            <div id="imageContainer"></div>
+        </div>
+
+        <div class="user-input">
+            <div class="box input-box">
+						<textarea
+                                id="message-input"
+                                placeholder="Ask a question"
+                                cols="30"
+                                rows="10"
+                                style="white-space: pre-wrap"></textarea>
+                <div id="send-button">
+                    <i class="fa-regular fa-paper-plane-top"></i>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="options-container">
+                <div class="buttons">
+
+                    <div class="field">
+                        <select class="dropdown" name="model" id="model">
+                            <option value="college" selected>Academics</option>
+                            <option value="media">Media Creator</option>
+                            <option value="advisor">Advisor</option>
+                            <option value="pro">Professional</option>
+                        </select>
+                    </div>
+                    <div class="field checkbox">
+                        <input type="checkbox" id="switch"/>
+                        <label for="switch"></label>
+                        <span style="color: black">Web Access</span>
+                    </div>
+                    <div class="buttonDownload">
+                        <span id="download_button">OUTPUT</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mobile-sidebar">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+</div>
+<!-- scripts -->
+<script>
+    window.conversation_id = "{{ chat_id }}";
+</script>
+<script src="js/icons.js"></script>
+<script src="js/plygrd_websocket.js" defer></script>
+
+<script src="js/highlight.min.js"></script>
+<script src="js/highlightjs-copy.min.js"></script>
+<script src="js/theme-toggler.js"></script>
+</body>
+</html>
