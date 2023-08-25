@@ -16,6 +16,9 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicon-32x32.png"/>
     <link rel="icon" type="image/png" sizes="16x16" href="../static/images/favicon-16x16.png"/>
     <link rel="manifest" href="../static/images/site.webmanifest"/>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@latest/dist/markdown-it.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
     <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/base16/dracula.min.css"/>
@@ -79,7 +82,7 @@
                                 cols="30"
                                 rows="10"
                                 style="white-space: pre-wrap"></textarea>
-                <div id="send-button">
+                <div id="send-button" onclick="startResearch()">
                     <i class="fa-regular fa-paper-plane-top"></i>
                 </div>
             </div>
@@ -127,7 +130,7 @@
     window.conversation_id = "{{ chat_id }}";
 </script>
 <script src="../static/js/icons.js"></script>
-<script src="../static/js/aidev.js" defer></script>
+<script src="../static/js/aidev_ws.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/markdown-it@latest/dist/markdown-it.min.js"></script>
 <script src="../static/js/highlight.min.js"></script>
 <script src="../static/js/highlightjs-copy.min.js"></script>

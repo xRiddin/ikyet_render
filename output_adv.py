@@ -19,11 +19,10 @@ with open('config.yml', 'r', encoding='utf-8') as config_file:
     gpt4code = config['gpt4code']
 
 
-async def final(prompt, dire):
-    total = []
+async def final(prompt, dire, websocket):
+    await websocket.send_json({'type': 'logs', 'output': 'generating specifications for the application'})
     filepaths, specs = await filepath(prompt)
-    total.append(specs)
-    total.append(filepaths)
+    await websocket.send_json({'type': 'output', 'output': specs})
     pattern = r"'([^']+)'\s*"
     filenames = re.findall(pattern, filepaths)
     print(len(filenames))
@@ -32,17 +31,18 @@ async def final(prompt, dire):
         fil = await files(filenames[_], specs)
         print(filenames[_])
         time.sleep(15)
+        await websocket.send_json({'type': 'logs', 'output': f'generating the codes for file: {_}'})
         final_code = await gpt41(filepaths_string=filepaths, file=filenames[_], chat=fil, specs=specs, direct=dire)
-        total.append(final_code)
-    unit = await unit_test(filepaths, total, dire)
-    total.append(unit)
-    return total
+        await websocket.send_json({'type': 'output', 'output': final_code})
+    await websocket.send_json({'type': 'logs', 'output': 'generating unit tests...'})
+    unit = await unit_test(filepaths, final_code, dire)
+    await websocket.send_json({'type': 'output', 'output': unit})
 
 
 async def gpt41(filepaths_string, file, chat, specs, direct):
     while True:
         try:
-            final_code = ge.generate(gpt4code, f"""
+            final_code = ge.generate( gpt4code + f"""
             these are the specifications for the files {specs},
             these are the other files that are worked upon later and shouldn't be edited now {filepaths_string},
             and this is the only file you should edit:{file},
@@ -103,7 +103,7 @@ async def generate_final(file=None, specs=None, finals=None, change=None):
 
 
 async def filepath(prompt):
-    specs = ge.generate(f'{spec}', f'please generate the specifications for: {prompt}', )
+    specs = ge.generate(f'{spec}' + f'please generate the specifications for: {prompt}', )
 
     filepaths_string = await g.generate_response(
         f"""

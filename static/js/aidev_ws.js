@@ -55,7 +55,7 @@ const startResearch = () => {
 	const listenToSockEvents=()=>{
 
 		const {protocol, host, pathname} = window.location;
-		const ws_uri = `${protocol === 'https:' ? 'wss:' : 'ws:'}//${host}/ws`;
+		const ws_uri = `${protocol === 'https:' ? 'wss:' : 'ws:'}//${host}/aidev`;
 		const converter = new showdown.Converter();
 		const socket = new WebSocket(ws_uri);
 		window.token = message_id();
@@ -66,9 +66,6 @@ const startResearch = () => {
 				const responseText = data.output;
 				console.log(data)
 				console.log(responseText)
-				if (responseText.includes("https://replicate.delivery")) {
-					loadImage(responseText);
-				} else {
 					if (data.type === 'logs') {
 						addAgentResponse(data);
 					} else if (data.type === 'output') {
@@ -77,8 +74,7 @@ const startResearch = () => {
 						updateDownloadLink(data);
 					}
 
-			//add_message(window.conversation_id, "assistant", responseText);
-				}
+			add_message(window.conversation_id, "assistant", responseText);
 				prompt_lock = false;
 
 			} catch(error){
@@ -93,15 +89,13 @@ const startResearch = () => {
 					const input = message_input.value
 
 					console.log(input)
-					let model = document.getElementById("model");
-					const models = model.options[model.selectedIndex].value
-					console.log(models)
 					const web = document.getElementById("switch").checked
+					const adv = document.getElementById("switch2").checked
 					console.log(web)
 
 					const requestData = {
 						input: input,
-						model: models,
+						adv: adv,
 						web: web,
 					};
 					console.log(requestData);
@@ -149,15 +143,7 @@ const startResearch = () => {
 	const updateScroll = () => {
 		window.scrollTo(0, document.body.scrollHeight);
 	};
-
-function loadImage(imageLink) {
-	const imageContainer = document.getElementById('imageContainer');
-	const img = document.createElement('img');
-	img.src = imageLink;
-	img.alt = 'Image Description';
-	imageContainer.appendChild(img);
-}
-
+/*
 async function openFileExplorer() {
 	const fileInput = document.getElementById("fileInput");
 	await fileInput.click();
@@ -190,7 +176,7 @@ async function processFile() {
 		})
 		.catch((error) => console.error("Error:", error));
 }
-
+*/
  const add_user_message_box = (message) => {
 	const messageDiv = document.createElement("div");
 	messageDiv.classList.add("message");
@@ -281,7 +267,7 @@ const set_conversation = async (conversation_id) => {
 };
 
 const new_conversation = async () => {
-	history.pushState({}, null, `${url_prefix}/plygrd.html`);
+	history.pushState({}, null, `${url_prefix}/aidev.html`);
 	window.conversation_id = uuid();
 
 	await clear_conversation();
@@ -633,8 +619,10 @@ function clearTextarea(textarea) {
 
 download_button.addEventListener("click", handleDownload);
 window.addEventListener('load', setRandomBackground);
-document.getElementById("fileForm").addEventListener("submit", function (event) {
+/*document.getElementById("fileForm").addEventListener("submit", function (event) {
 	event.preventDefault(); // Prevent form submission and page refresh
 	processFile();
 });
+
+ */
 

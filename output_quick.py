@@ -17,18 +17,18 @@ with open('config.yml', 'r', encoding='utf-8') as config_file:
     gpt4 = config['gpt4']
 
 
-async def final(prompt, dire):
-    total = []
-    filepaths, specs = await filepath(prompt)
-    total.append(specs)
-    total.append(filepaths)
-    filess = await files(filepaths, specs)
-    gpt = await gpt41(filepaths, filess, specs, dire)
-    unit = await unit_test(filepaths, filess, dire)
-    total.append(gpt)
-    total.append(unit)
-    return total
+async def final(prompt, dire, websocket):
+    await websocket.send_json({'type': 'logs', 'output': 'generating specifications for your application..'})
 
+    filepaths, specs = await filepath(prompt)
+    await websocket.send_json({'type': 'output', 'output': specs})
+    filess = await files(filepaths, specs)
+    await websocket.send_json({'type':'logs', 'output': 'generating the files for your application'})
+    gpt = await gpt41(filepaths, filess, specs, dire)
+    await websocket.send_json({'type': 'output', 'output': gpt})
+    await websocket.send_json({'type': 'output', 'output': 'generating unit tests for your application'})
+    unit = await unit_test(filepaths, filess, dire)
+    await websocket.send_json({'type': 'output', 'output': unit})
 
 async def generate_file(filepaths_string=None, prompt=None):
     chat = await g.generate_response(
@@ -79,6 +79,7 @@ async def filepath(prompt):
         """,
         specs,
     )
+    print(specs)
     return filepaths_string, specs
 
 
@@ -97,7 +98,7 @@ async def files(filepaths_string, specs):
 async def gpt41(filepaths_string, chat, specs, direct):
     while True:
         try:
-            final_code = ge.generate(gpt4, f""" please follow everything that is said to you now: {fixs}
+            final_code = ge.generate(gpt4 + f""" please follow everything that is said to you now: {fixs}
             these are the specifications for the files {specs}
             these are the files you will be working on {filepaths_string}
             and these are the codes you will be working on {chat}""", )

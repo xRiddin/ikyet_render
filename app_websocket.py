@@ -70,27 +70,37 @@ async def playgrd(websocket: WebSocket):
             break
 
 
-@app.post("/main")
-async def ma_in(user_text: str, adv: bool):
+@app.websocket_route("/aidev")
+async def ma_in(websocket: WebSocket):
     get_directory()
-    if adv:
-        return await advance(user_text)
-    else:
-        return await quick(user_text)
+    await websocket.accept()
+    while True:
+        try:
+            data = await websocket.receive_json()
+            print(data)
+            prompt = data["input"]
+            adv = data["adv"]
+            web = data["web"]
+            if adv is True:
+                await websocket.send_json({'type': 'logs', 'output': 'System running in advance mode'})
+                resp = await advance(prompt, websocket)
+                await websocket.send_json({'type': 'output', 'output': resp})
+            else:
+                await websocket.send_json({'type': 'logs', 'output': 'your AI developer is booting..'})
+                resp = await quick(prompt, websocket)
+                await websocket.send_json({'type': 'output', 'output': resp})
+        except WebSocketDisconnect:
+            break
 
 
-async def advance(prompt: str):
+async def advance(prompt: str, websocket):
     directory_path = current_directory
-    res = await m(prompt, directory_path)
-    response = ', '.join(res)
-    return {"response": response}
+    res = await m(prompt, directory_path, websocket)
 
 
-async def quick(prompt: str):
+async def quick(prompt: str, websocket):
     directory_path = current_directory
-    resp = await n(prompt, directory_path)
-    response = ', '.join(resp)
-    return {"response": response}
+    resp = await n(prompt, directory_path, websocket)
 
 
 @app.post("/upload/")
