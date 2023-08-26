@@ -3,7 +3,7 @@ import time
 import openai
 
 
-def generate(system, user, **kwargs):
+def generate(user, **kwargs):
     openai.api_base = 'https://chimeragpt.adventblocks.cc/api/v1'
     openai.api_key = '_1odz14jRUhEDXaEBU2NHQxl6gaUlX_LsKNR3_cAWW8'
     for _ in range(5):
@@ -11,7 +11,7 @@ def generate(system, user, **kwargs):
             response = openai.ChatCompletion.create(
                 model='gpt-3.5-turbo-16k',
                 messages=[
-                    {'role': 'system', 'content': system,
+                    {
                      'role': 'user', 'content': user},
                 ],
                 temperature=0.2

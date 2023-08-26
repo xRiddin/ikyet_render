@@ -5,8 +5,8 @@ import openai
 
 def generate(user, **kwargs):
     print("this is for gpt4")
-    openai.api_base = 'https://chimeragpt.adventblocks.cc/api/v1'
-    openai.api_key = '_1odz14jRUhEDXaEBU2NHQxl6gaUlX_LsKNR3_cAWW8'
+    openai.api_base = 'https://api.nova-oss.com/v1'
+    openai.api_key = 'nv-QcufbFJJPucp91LI4hr2N0V4x0SScIHsbkjdlWvbjWUhyMcx'
     for _ in range(5):
         try:
             response = openai.ChatCompletion.create(

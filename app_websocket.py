@@ -82,7 +82,7 @@ async def ma_in(websocket: WebSocket):
             adv = data["adv"]
             web = data["web"]
             if adv is True:
-                await websocket.send_json({'type': 'logs', 'output': 'System running in advance mode'})
+                await websocket.send_json({'type': 'logs', 'output': '🏢Building a team of quality engineers...'})
                 resp = await advance(prompt, websocket)
                 await websocket.send_json({'type': 'output', 'output': resp})
             else:
@@ -103,7 +103,7 @@ async def quick(prompt: str, websocket):
     resp = await n(prompt, directory_path, websocket)
 
 
-@app.post("/upload/")
+@app.post("/upload")
 async def upload(files: List[UploadFile] = File(...)):
     current_directory = director()
     for file in files:
@@ -121,7 +121,7 @@ async def upload(files: List[UploadFile] = File(...)):
     return {"file_path": file_path}
 
 
-@app.get("/files_download/")
+@app.get("/files_download")
 async def download():
     directory_path = current_directory
     temp_dir = tempfile.mkdtemp()
@@ -132,7 +132,7 @@ async def download():
     except Exception as e:
         print(e)
     finally:
-        threading.Thread(target=delayed_delete, args=(zip_file_path, temp_dir, directory_path,)).start()
+        threading.Thread(target=delayed_delete, args=(directory_path,)).start()
     # finally:
         # shutil.rmtree(temp_dir)
         # shutil.rmtree(directory_path)

@@ -1,7 +1,7 @@
 import csv
 import os
 import re
-
+import urllib.request
 import PyPDF2
 import ebooklib
 import xlrd
@@ -53,7 +53,7 @@ class PlayGrd:
                 await self.websocket.send_json({'type': "logs", 'output': f'🤔Imagining {text.replace("/imagine", "" )}..'})
                 image = await self.imagine(text.replace("/imagine", ""))
                 await self.websocket.send_json({'type': 'logs', 'output': '✅Image generated.'})
-                await self.websocket.send_json({'type':'output', 'output': image})
+                await self.websocket.send_json({'type':'logs', 'output': image})
                 return
             if '/ppt' in self.prompt:
                 text = self.prompt
@@ -118,11 +118,14 @@ class PlayGrd:
         return resp
 
     async def imagine(self, prompt):
-        pr = g(pic, pic + prompt, )
+        pr = g(pic + prompt)
         matches = re.findall(r"\*\*Prompt 1\*\*:(.*?)(?=\*\*|\Z)", pr, re.DOTALL)
         summary = matches[0].strip()
         await self.websocket.send_json({'type':'logs', 'output':'Working on the picture 🖼️...Hold on!'})
         resp = d(summary)
+        os.makedirs(self.dire)
+        urllib.request.urlretrieve(resp, f"{self.dire}/image.png")
+        await self.websocket.send_json({'type': 'path', 'output': f'{self.dire}/image.png'})
         return resp
 
     async def read_pdf(self, file_path):

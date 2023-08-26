@@ -2,7 +2,7 @@ import os
 import re
 
 
-def write(chat, direct):
+def write(chat, direct, filename=None):
     regex = r"(\S+)\n\s*```[^\n]*\n(.+?)```"
     matches = re.finditer(regex, chat, re.DOTALL)
 
@@ -34,7 +34,10 @@ def write(chat, direct):
     # files.append(("README.md", readme))
 
     for file_name, file_content in files:
-        file_path = os.path.join(direct, file_name)
+        if filename:
+            file_path = os.path.join(direct, filename)
+        else:
+            file_path = os.path.join(direct, file_name)
         dirt = os.path.dirname(file_path)
         os.makedirs(dirt, exist_ok=True)
 

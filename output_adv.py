@@ -4,7 +4,7 @@ import time
 
 import yaml
 
-from models import generate as g, gpt44 as ge
+from models import gpt35 as g, gpt44 as ge
 import write_file as w
 
 with open('config.yml', 'r', encoding='utf-8') as config_file:
@@ -12,7 +12,7 @@ with open('config.yml', 'r', encoding='utf-8') as config_file:
     gen = config['GENERATE']
     phil = config['PHILOSOPHY']
     rewrite = config['re_write']
-    test = config['UNIT']
+    unit = config['UNIT']
     fixs = config['fix_code']
     spec = config['spec']
     gpt4 = config['gpt4']
@@ -20,35 +20,38 @@ with open('config.yml', 'r', encoding='utf-8') as config_file:
 
 
 async def final(prompt, dire, websocket):
-    await websocket.send_json({'type': 'logs', 'output': 'generating specifications for the application'})
+    file = []
+    await websocket.send_json({'type': 'logs', 'output': " 📄 An architect is currently engaged in the process of designing the application's blueprint..."})
     filepaths, specs = await filepath(prompt)
     await websocket.send_json({'type': 'output', 'output': specs})
     pattern = r"'([^']+)'\s*"
     filenames = re.findall(pattern, filepaths)
     print(len(filenames))
+    await websocket.send_json({'type': 'logs', 'output': " 🧑‍💻 Our engineers ⚙️ are actively engaged in developing the software..."})
 
     for _ in range(len(filenames)):
         fil = await files(filenames[_], specs)
         print(filenames[_])
         time.sleep(15)
-        await websocket.send_json({'type': 'logs', 'output': f'generating the codes for file: {_}'})
-        final_code = await gpt41(filepaths_string=filepaths, file=filenames[_], chat=fil, specs=specs, direct=dire)
+        await websocket.send_json({'type': 'logs', 'output': f'🧑‍💻 Our coder working on file number: {_}'})
+        final_code = await gpt41(file=filenames[_], chat=fil, specs=specs, direct=dire, filename=filenames[_])
+        file.append(final_code)
         await websocket.send_json({'type': 'output', 'output': final_code})
-    await websocket.send_json({'type': 'logs', 'output': 'generating unit tests...'})
-    unit = await unit_test(filepaths, final_code, dire)
+    await websocket.send_json({'type': 'logs', 'output': ', '.join(file)})
+    await websocket.send_json({'type': 'logs', 'output': ' 👩‍💻Testers are developing unit tests for the developed software...'})
+    unit = await unit_test(filepaths, specs, dire)
     await websocket.send_json({'type': 'output', 'output': unit})
 
 
-async def gpt41(filepaths_string, file, chat, specs, direct):
+async def gpt41(file, chat, specs, direct, filename):
     while True:
         try:
             final_code = ge.generate( gpt4code + f"""
             these are the specifications for the files {specs},
-            these are the other files that are worked upon later and shouldn't be edited now {filepaths_string},
-            and this is the only file you should edit:{file},
-            and this is the code of {file} that you will working on {chat}""", )
+            and this is the only file you should edit:{file}:
+            {chat}""", )
             fi_nal = await generate_final(file, specs, chat, final_code)
-            w.write(fi_nal, f'{direct}/')
+            w.write(fi_nal, f'{direct}/', filename)
             return fi_nal
         except Exception as e:
             for _ in range(3):
@@ -64,8 +67,8 @@ async def gpt41(filepaths_string, file, chat, specs, direct):
 
 
 async def generate_file(filepaths_string=None, prompt=None):
-    chat = await g.generate_response(
-        f'{gen} + {phil}',
+    chat = g.generate(
+        f'{gen}' +
         f"""
            We have broken up the program into per-file generation.
            Now your job is to generate only the code for the file{filepaths_string}
@@ -83,8 +86,8 @@ async def generate_file(filepaths_string=None, prompt=None):
 
 
 async def generate_final(file=None, specs=None, finals=None, change=None):
-    resp = await g.generate_response(
-        f'{gen + rewrite}',
+    resp = g.generate(
+        f'{gen + rewrite}'+
         f"""
                you have been given feedback and improvements and changes to do:{change}
                Now your job is to generate only the code for the file:{file}
@@ -105,13 +108,13 @@ async def generate_final(file=None, specs=None, finals=None, change=None):
 async def filepath(prompt):
     specs = ge.generate(f'{spec}' + f'please generate the specifications for: {prompt}', )
 
-    filepaths_string = await g.generate_response(
+    filepaths_string = g.generate(
         f"""
         please only list the filepaths you would write, and return them as a python array of strings.
         do not write any other explanation, you should write only a python array of strings.
         output in the following format only: Where FILENAME is the filename of the code and EXTENSION is the extension of the file.
         ['FILENAME.EXTENSION', ]
-        """,
+        """ +
         specs,
     )
     return filepaths_string, specs
@@ -149,7 +152,7 @@ def director():
 async def unit_test(filepath_string, fi_nal, direct):
     testing = await generate_file(
         filepaths_string=filepath_string,
-        prompt=f'{test}' + ', '.join(fi_nal),
+        prompt=unit + fi_nal,
     )
     w.write(testing, f"{direct}/unit_tests")
     return testing
