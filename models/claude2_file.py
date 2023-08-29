@@ -5,6 +5,7 @@ SESSION_KEY = "__cf_bm=uc20EBxEM9OCj6h9eAN8SBVp4LL8k1jB2xUaV_b3tlU-1692503038-0-
 
 
 def file(files):
+    print("this is claude2")
     claude = Client(SESSION_KEY)
     conversation = claude.create_new_chat()
     conv_id = conversation['uuid']

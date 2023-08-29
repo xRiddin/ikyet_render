@@ -57,7 +57,6 @@ async def playgrd(websocket: WebSocket):
                 await websocket.send_json({'type': 'logs', 'output': 'Initializing an agent 🤖...'})
                 res = await fin.final()
                 print(res)
-                await websocket.send_json({'type': 'output', 'output': res})
                 file_path = None
 
             else:
@@ -65,7 +64,6 @@ async def playgrd(websocket: WebSocket):
                 await websocket.send_json({'type': 'logs', 'output': 'Initializing an agent 🤖...'})
                 res = await fin.final()
                 print(res)
-                await websocket.send_json({'type': 'output', 'output': res})
         except WebSocketDisconnect:
             break
 
