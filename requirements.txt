@@ -110,3 +110,4 @@ XlsxWriter
 yarl
 zipp
 zopfli
+tiktoken
