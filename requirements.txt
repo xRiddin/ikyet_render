@@ -110,4 +110,4 @@ XlsxWriter
 yarl
 zipp
 zopfli
-tiktoken
+tiktoken==0.4.0
