@@ -3,7 +3,7 @@ import tiktoken
 import openai
 
 
-def generate(sys, user, **kwargs):
+def generate(sys, user=None, **kwargs):
     print("this is for gpt3.5-nova")
     messages = []
     messages.append(user)
