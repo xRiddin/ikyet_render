@@ -14,7 +14,7 @@ from models.web.text import \
     write_md_to_pdf
 from models.web.web_scrape import async_browse
 from models.web.web_search import web_search
-from models.gpt45 import generate as ge
+from models.gpt4_ca import generate as ge
 from models.web.config import Config
 CFG = Config()
 

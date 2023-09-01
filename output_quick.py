@@ -3,7 +3,7 @@ import time
 
 import yaml
 
-from models import generate as g, gpt44 as ge
+from models import generate as g, gpt4_nov as ge
 import write_file as w
 
 with open('config.yml', 'r', encoding='utf-8') as config_file:

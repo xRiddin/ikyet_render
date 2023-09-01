@@ -66,7 +66,7 @@ const startResearch = () => {
 				const responseText = data.output;
 				console.log(data)
 				console.log(responseText)
-				if (responseText.includes("https://pbxt.replicate.delivery")) {
+				if (responseText.includes("https://pdxt.replicate.delivery")) {
 					loadImage(responseText);
 				} else {
 					if (data.type === 'logs') {

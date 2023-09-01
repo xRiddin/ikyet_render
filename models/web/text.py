@@ -6,7 +6,7 @@ from typing import Dict, Generator, Optional
 from md2pdf.core import md2pdf
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from ..gpt45 import generate as ge
+from ..gpt4_ca import generate as ge
 
 
 def split_text(text: str, max_length: int = 8192) -> Generator[str, None, None]:
