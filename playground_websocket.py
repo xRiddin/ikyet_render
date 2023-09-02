@@ -7,7 +7,6 @@ import ebooklib
 import xlrd
 import yaml
 from ebooklib import epub
-import time
 from models.claude2_file import file as cl
 from models.gpt_ca import generate as g
 from models.gpt4_ca import generate as ge
@@ -70,21 +69,20 @@ class PlayGrd:
                 await self.websocket.send_json({"type": "output", "output": result})
                 return result
             elif '/input' in self.prompt:
-                await self.websocket.send_json({'type': 'logs', 'output':'Analyzing the files...'})
+                await self.websocket.send_json({'type': 'logs', 'output': 'Analyzing the files...'})
                 file = await self.file_input(self.prompt, self.dire)
                 return file
             elif '/imagine' in self.prompt:
                 text = self.prompt
-                await self.websocket.send_json({'type': "logs", 'output': f'🤔Imagining {text.replace("/imagine", "" )}..'})
-                image = await self.imagine(text.replace("/imagine", ""))
-                await self.websocket.send_json({'type': 'logs', 'output': '✅Image generated.'})
-                await self.websocket.send_json({'type':'logs', 'output': image})
+                await self.websocket.send_json({'type': "logs", 'output': f'🤔 Imagining {text.replace("/imagine", "" )}..'})
+                await self.imagine(text.replace("/imagine", ""))
+                await self.websocket.send_json({'type': 'logs', 'output': '✅ Image generated. Click on the download button.'})
                 return
             elif '/ppt' in self.prompt:
                 text = self.prompt
                 await self.websocket.send_json({'type': 'logs', 'output': f"👨‍🍳 cooking up a masterpiece in PowerPoint's kitchen..."})
                 ppt = await p.slides(text.replace('/ppt', ''), self.dire)
-                await self.websocket.send_json({'type': 'logs', 'output': '✅PowerPoint Presentation generated.'})
+                await self.websocket.send_json({'type': 'logs', 'output': '✅ PowerPoint Presentation generated.'})
                 await self.websocket.send_json({'type': 'link', 'output': ppt})
                 return
             elif '/yt' in self.prompt:
@@ -104,12 +102,12 @@ class PlayGrd:
                 return
             elif '/imagine' in self.prompt:
                 await self.websocket.send_json(
-                    {'type': "logs", 'output': f'🤔Imagining {self.prompt.replace("/imagine", "")}..'})
+                    {'type': "logs", 'output': f'🤔 Imagining {self.prompt.replace("/imagine", "")}..'})
                 await self.adv_imagine(self.prompt.replace("/imagine", ""))
                 return
             elif '/content' in self.prompt:
                 await self.websocket.send_json({'type': 'logs', 'output': '/sparkle_bot'})
-                await self.websocket.send_json({'type': 'logs', 'output': '👩‍💻generating content...'})
+                await self.websocket.send_json({'type': 'logs', 'output': '👩‍💻 generating content...'})
                 messages.append(self.prompt.replace('/content', ''))
                 res = await self.cont(', '.join(messages))
                 messages.append(res)
@@ -184,7 +182,7 @@ Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answe
         pr = g(pic + prompt)
         matches = re.findall(r"\*\*Prompt 1\*\*:(.*?)(?=\*\*|\Z)", pr, re.DOTALL)
         summary = matches[0].strip()
-        await self.websocket.send_json({'type':'logs', 'output': 'Working on the picture 🖼️...Hold on!'})
+        await self.websocket.send_json({'type': 'logs', 'output': 'Working on the picture 🖼️...Hold on!'})
         resp = d(summary)
         os.makedirs(self.dire)
         urllib.request.urlretrieve(resp, f"{self.dire}/image.png")
@@ -196,8 +194,8 @@ Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answe
         if "wop" in prompt:
             await self.websocket.send_json({'type': 'logs', 'output': f'Working on the picture  🖼️...Hold on!'})
             resp = d(self.prompt.replace("wop", ""))
-            await self.websocket.send_json({'type': 'logs', 'output': '✅Image generated.'})
-            await self.websocket.send_json({'type': 'logs', 'output': resp})
+            urllib.request.urlretrieve(resp, f"{self.dire}/image.png")
+            await self.websocket.send_json({'type': 'logs', 'output': '✅Image generated. Click on the download button.'})
             await self.websocket.send_json({'type': 'path', 'output': f'{self.dire}/image.png'})
         else:
             pr = g(pic + prompt)
@@ -208,13 +206,12 @@ Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answe
                 await self.websocket.send_json({'type': 'logs', 'output': f'Working on the picture {i} 🖼️...Hold on!'})
                 resp = d(img)
                 urllib.request.urlretrieve(resp, f"{self.dire}/image{i}.png")
-                await self.websocket.send_json({'type': 'logs', 'output': '✅Image generated.'})
-                await self.websocket.send_json({'type': 'logs', 'output': resp})
+                await self.websocket.send_json({'type': 'logs', 'output': '✅Image generated. Click on the download button.'})
                 await self.websocket.send_json({'type': 'path', 'output': f'{self.dire}/image{i}.png'})
         return
 
     async def read_pdf(self, file_path):
-        await self.websocket.send_json({'type': 'logs', 'output':'Reading pdf pages 📖..'})
+        await self.websocket.send_json({'type': 'logs', 'output': 'Reading pdf pages 📖..'})
         with open(file_path, 'rb') as file:
             pdf_reader = PyPDF2.PdfReader(file)
             text = ''
@@ -231,4 +228,3 @@ Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answe
             if item.get_type() == ebooklib.ITEM_DOCUMENT:
                 text += item.get_content()
         return text
-

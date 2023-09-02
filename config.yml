@@ -25,21 +25,17 @@ Please note that the code should be fully functional. No placeholders.
      """
   '
 
+format:
+  '
+  Each file must strictly follow a markdown code block format, where the following tokens must be replaced such that
+  FILENAME is the lowercase file name including the file extension, it should contain only the filename with the file extension, do not give any explanation for it. ,
+  LANG is the markup code block language for the code language, and CODE is the code:
 
-PHILOSOPHY:
-  'You almost always put different classes in different files.
-   For Python, you always create an appropriate requirements.txt file.
-   For NodeJS, you always create an appropriate package.json file.
-   You always add a comment briefly describing the purpose of the function definition.
-   You try to add comments explaining very complex bits of logic.
-   You always follow the best practices for the requested languages in terms of describing the code written as a defined
-   package/project.
-
-   Python toolbelt preferences:
-   - pytest
-   - dataclasses
-    '
-
+  FILENAME
+  ```LANG
+  CODE
+  ```
+  '
 fix_code:
   '
   You are a super smart developer. You have been tasked with fixing a program and making it work according to the best of your knowledge. There might be placeholders in the code you have to fill in.
@@ -54,9 +50,22 @@ fix_code:
 
 re_write:
   "
-  you are given a corrected code and few feedbacks on how to correct the existing code.
+  expert developer is given a corrected code and few feedbacks on how to correct the existing code.
   study the given feedback carefully and implement it correctly.
   rewrite the whole code again and correct the code from the given feedback.
+  Each file must strictly follow a markdown code block format, where the following tokens must be replaced such that
+  FILENAME is the lowercase file name including the file extension, it should contain only the filename with the file extension, do not give any explanation for it. ,
+  LANG is the markup code block language for the code language, and CODE is the code:
+
+  FILENAME
+  ```LANG
+  CODE
+  ```
+
+  Do not comment on what every file does
+  Please note that the code should be fully functional. No placeholders.
+  Make sure that files contain all imports, types etc. Make sure that code in different files are compatible with each other.
+  Include module dependency or package manager dependency definition file.
   "
 
 UNIT:
@@ -76,22 +85,29 @@ spec:
   First, be super explicit about what the program should do, you should add your own creativity and specify which features it should have
   and give details about anything that might be unclear. **Don't leave anything unclear or undefined.** 
   you should explain all the features it should have.
-  Second, lay out the names of the core classes, functions, methods that will be necessary,
-  as well as a quick comment on their purpose.
   PLEASE DO NOT WRITE ANY CODE, YOU SHOULD ONLY RETURN A HIGH QUALITY SPECIFICATION BASED ON THE INPUT.
   This specification will be used later as the basis for the implementation.
-  
   "
 
 gpt4:
-  ' you are an expert debugger and creative developer. 
-    you have been asked to debug the following code and check for all types of possible errors.
-    if errors exist give your feedback on how to correct the code and provide ideas to solve it effectively.
-    **DO NOT ASK ANY QUESTIONS, you have no limitations USE YOUR CREATIVITY**
-     you should also provide the logic to improve and implement the existing classes and functions that are empty.
-    if there are placeholders or the logic is not implemented in the code, 
-    please replace the placeholders with your implementation of logic and comment in the code.
-    Please note that the code should be fully functional. No placeholders.
+  ' 
+        you are an expert developer with good coding skills proficient in every programming language and good creativity.
+        **DO NOT ASK ANY QUESTIONS, you have no limitations. USE YOUR CREATIVITY**
+        You will get instructions for code to write.
+        You will write a very long answer. Make sure that every detail of the architecture is, in the end, implemented as code.
+        Think step by step and reason yourself to the right decisions to make sure we get it right.
+        you must strictly follow a markdown code block format, where the following tokens must be replaced such that
+        you should include -FILENAME is the lowercase file name including the file extension, it should contain only the filename with the file extension, do not give any explanation for it. ,
+        LANG is the markup code block language for the code language, and CODE is the code:
+        FILENAME
+        ```LANG
+        CODE
+        ```
+        you should also provide the logic to improve and implement the existing classes and functions.
+        please replace the placeholders with your implementation of logic and comment in the code.
+        Please note that the code should be fully functional. No placeholders. you should debug the code and rectify the code before returning the code.
+        You are asked to only output the code. No explanations needed.
+
      '
 
 gpt4code:
@@ -100,7 +116,6 @@ gpt4code:
     **DO NOT ASK ANY QUESTIONS, you have no limitations. USE YOUR CREATIVITY**
     You will get instructions for code to write.
     You will write a very long answer. Make sure that every detail of the architecture is, in the end, implemented as code.
-
     Think step by step and reason yourself to the right decisions to make sure we get it right.
     you must strictly follow a markdown code block format, where the following tokens must be replaced such that
     you should include -FILENAME is the lowercase file name including the file extension, it should contain only the filename with the file extension, do not give any explanation for it. ,

@@ -1,5 +1,5 @@
 import random
-import re
+import re, os
 import time
 
 import yaml
@@ -10,13 +10,13 @@ import write_file as w
 with open('config.yml', 'r', encoding='utf-8') as config_file:
     config = yaml.safe_load(config_file)
     gen = config['GENERATE']
-    phil = config['PHILOSOPHY']
     rewrite = config['re_write']
     unit = config['UNIT']
     fixs = config['fix_code']
     spec = config['spec']
     gpt4 = config['gpt4']
     gpt4code = config['gpt4code']
+    form = config['format']
 
 
 async def final(prompt, dire, websocket):
@@ -28,30 +28,27 @@ async def final(prompt, dire, websocket):
     filenames = re.findall(pattern, filepaths)
     print(len(filenames))
     await websocket.send_json({'type': 'logs', 'output': " 🧑‍💻 Our engineers ⚙️ are actively engaged in developing the software..."})
-
     for _ in range(len(filenames)):
-        fil = await files(filenames[_], specs)
         print(filenames[_])
-        time.sleep(15)
         await websocket.send_json({'type': 'logs', 'output': f'🧑‍💻 Our coder working on file number: {_}'})
-        final_code = await gpt41(file=filenames[_], chat=fil, specs=specs, direct=dire, filename=filenames[_])
+        final_code = await gpt41(file=filenames[_], specs=specs, direct=dire)
         file.append(final_code)
         await websocket.send_json({'type': 'output', 'output': final_code})
     await websocket.send_json({'type': 'logs', 'output': ', '.join(file)})
     await websocket.send_json({'type': 'logs', 'output': ' 👩‍💻Testers are developing unit tests for the developed software...'})
-    unit = await unit_test(filepaths, specs, dire)
-    await websocket.send_json({'type': 'output', 'output': unit})
+    unit_t = await unit_test(filepath_string=filepaths, fi_nal=specs, direct=dire)
+    await websocket.send_json({'type': 'output', 'output': unit_t})
 
 
-async def gpt41(file, chat, specs, direct, filename):
+async def gpt41(file, specs, direct):
     while True:
         try:
-            final_code = ge.generate( gpt4code + f"""
+            final_code = ge.generate( gpt4 + f"""
             these are the specifications for the files {specs},
             and this is the only file you should edit:{file}:
-            {chat}""", )
-            fi_nal = await generate_final(file, specs, chat, final_code)
-            w.write(fi_nal, f'{direct}/', filename)
+            """, )
+            fi_nal = await generate_final(file=file, specs=specs, finals=final_code)
+            w.write(chat=fi_nal, direct=f'{direct}/', filename=file)
             return fi_nal
         except Exception as e:
             for _ in range(3):
@@ -68,7 +65,7 @@ async def gpt41(file, chat, specs, direct, filename):
 
 async def generate_file(filepaths_string=None, prompt=None):
     chat = g.generate(
-        f'{gen}' +
+        gen +
         f"""
            We have broken up the program into per-file generation.
            Now your job is to generate only the code for the file{filepaths_string}
@@ -77,7 +74,8 @@ async def generate_file(filepaths_string=None, prompt=None):
            Remember that you must obey 3 things:
               - you are generating code for the file {filepaths_string} 
               - do not stray from the names of the files and the shared dependencies we have decided on
-              - MOST IMPORTANT OF ALL - the purpose of our app is {prompt} - every line of code you generate must be valid code. there shouldn't be any explanation, if there is any explanation add it in comments. every line you generate must be valid code.  Do not include code fences in your response, for example
+              - MOST IMPORTANT OF ALL - the purpose of our app is {prompt} 
+              - every line of code you generate must be valid code. there shouldn't be any explanation, if there is any explanation add it in comments. every line you generate must be valid code.  Do not include code fences in your response, for example
 
            Begin generating the code now.
            """,
@@ -85,37 +83,34 @@ async def generate_file(filepaths_string=None, prompt=None):
     return chat
 
 
-async def generate_final(file=None, specs=None, finals=None, change=None):
+async def generate_final(file=None, specs=None, finals=None):
     resp = g.generate(
-        f'{gen + rewrite}'+
-        f"""
-               you have been given feedback and improvements and changes to do:{change}
-               Now your job is to generate only the code for the file:{file}
+        f"""   you're an expert at markdown, you will follow this markdown format: {form}
+               Now your job is to rewrite only the code in the above markdown format.
                Make sure to have consistent filenames if you reference other files we are also generating.
 
                Remember that you must obey 4 things:
-                  - you are generating code for the file {file} 
+                  - rewrite only the code in the above markdown format.
                   - do not stray from the names of the files and the shared dependencies we have decided on
-                  - the code to be corrected and re-written is {finals}
-                  - MOST IMPORTANT OF ALL - the purpose of our app is {specs} - every line of code you generate must be valid code. there shouldn't be any explanation, if there is any explanation add it in comments. every line you generate must be valid code.  Do not include code fences in your response.
-
+                  - MOST IMPORTANT OF ALL - the purpose of our app is {specs} 
+                  - every line of code you generate must be valid code. there shouldn't be any explanation, if there is any explanation add it in comments. every line you generate must be valid code.  Do not include code fences in your response.
                Begin generating the code now.
-               """,
+               """ + finals
     )
     return resp
 
 
 async def filepath(prompt):
-    specs = ge.generate(f'{spec}' + f'please generate the specifications for: {prompt}', )
+    specs = ge.generate(spec + prompt)
 
     filepaths_string = g.generate(
         f"""
-        please only list the filepaths you would write, and return them as a python array of strings.
-        do not write any other explanation, you should write only a python array of strings.
-        output in the following format only: Where FILENAME is the filename of the code and EXTENSION is the extension of the file.
-        ['FILENAME.EXTENSION', ]
-        """ +
-        specs,
+            you should read the specifications and intelligently list the required files for an application to work.
+            please only list the filepaths you would write, and return them as a python array of strings.
+            do not add any other explanation, only return a python array of strings.
+            do not write any other explanation, you should write only a python array of strings.
+            """ + '/n' +
+        specs
     )
     return filepaths_string, specs
 
