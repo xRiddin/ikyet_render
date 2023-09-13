@@ -12,12 +12,11 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.safari.options import Options as SafariOptions
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
 from requests.compat import urljoin
 from ..web import text as summary
 from ..web.config import Config
@@ -98,14 +97,14 @@ def scrape_text_with_selenium(url: str) -> tuple[WebDriver, str]:
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
 
     options_available = {
-        "chrome": ChromeOptions,
-        "safari": SafariOptions,
-        "firefox": FirefoxOptions,
+        "chrome": ChromeOptions
     }
 
     options = options_available[CFG.selenium_web_browser]()
     options.add_argument(CFG.user_agent)
     options.add_argument('--headless')
+    options.add_argument("ChromeDriverManager().install()")
+
 
     if CFG.selenium_web_browser == "firefox":
         service = Service(executable_path=GeckoDriverManager().install())
@@ -207,4 +206,4 @@ def add_header(driver: WebDriver) -> None:
     Returns:
         None
     """
-    driver.execute_script(open(f"{FILE_DIR}/static/js/overlay.js", "r").read())
+    driver.execute_script(open(f"{FILE_DIR}/web/overlay.js", "r").read())

@@ -25,7 +25,7 @@ def generate_report_prompt(question, research_summary):
     return f'"""{research_summary}""" Using the above information, answer the following'\
            f' question or topic: "{question}" in a detailed report --'\
            " The report should focus on the answer to the question, should be well structured, informative," \
-           " in depth, with facts and numbers if available, a minimum of 1,200 words and with markdown syntax and apa format. "\
+           " in depth, with facts and numbers if available, a minimum of 14,200 tokens/words(that's equal to 20 pages in a novel) and with markdown syntax and apa format. "\
             "You MUST determine your own concrete and valid opinion based on the information found. Do NOT deter to general and meaningless conclusions." \
            "Write all source urls at the end of the report in apa format"
 
@@ -35,7 +35,7 @@ def generate_search_queries_prompt(question):
     Returns: str: The search queries prompt for the given question
     """
 
-    return f'Write 4 google search queries to search online that form an objective opinion from the following: "{question}". You must strictly respond using python list of strings in the format: ["query 1", "query 2", "query 3", "query 4"]'
+    return f'Write 6 google search queries to search online that form an objective opinion from the following: "{question}". You must strictly respond using python array of strings in the format: [ "query 1", "query 2", "query 3", "query 4", "query 5", "query 6" ]'
 
 
 def generate_resource_report_prompt(question, research_summary):
@@ -54,7 +54,7 @@ def generate_resource_report_prompt(question, research_summary):
            ' Focus on the relevance, reliability, and significance of each source.' \
            ' Ensure that the report is well-structured, informative, in-depth, and follows Markdown syntax.' \
            ' Include relevant facts, figures, and numbers whenever available.' \
-           ' The report should have a minimum length of 1,200 words.'
+           ' The report should have a minimum length of 14,200 tokens/words(that is equal to 20 pages in a novel)'
 
 
 def generate_outline_report_prompt(question, research_summary):
@@ -67,7 +67,7 @@ def generate_outline_report_prompt(question, research_summary):
     return f'"""{research_summary}""" Using the above information, generate an outline for a research report in Markdown syntax'\
            f' for the following question or topic: "{question}". The outline should provide a well-structured framework'\
            ' for the research report, including the main sections, subsections, and key points to be covered.' \
-           ' The research report should be detailed, informative, in-depth, and a minimum of 1,200 words.' \
+           ' The research report should be detailed, informative, in-depth, and a minimum of 14,200 tokens/words(that is equal to 20 pages in a novel)' \
            ' Use appropriate Markdown syntax to format the outline and ensure readability.'
 
 def generate_concepts_prompt(question, research_summary):

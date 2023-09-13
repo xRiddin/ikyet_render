@@ -1,5 +1,5 @@
 import json, os
-from models.generate import generate_response as ge
+from models.gpt3_nov import generate as ge
 # from IKYET.ikyet_render.models.sdxl import gen as img
 from pptx import Presentation
 from pptx.util import Inches
@@ -7,8 +7,8 @@ from pptx.dml.color import RGBColor
 prs = Presentation()
 
 
-async def content(topics):
-    con = await ge("""you are expert at following the given prompt. I would like to prepare a speech in pure markdown format, 
+def content(topics):
+    con = ge("""you are expert at following the given prompt. I would like to prepare a speech in pure markdown format, 
                 with language and topic consistent with the outline provided. 
                 You do not need to add any additional replies or explanations.
                 Here is the global outline:
@@ -16,8 +16,9 @@ async def content(topics):
                 you will generate content for each page accordingly. 
                 Each title must corresponds to one page of content, with a maximum of 100 words per page that is size of a small essay.
                 you must only reply in python list of strings for each topic you generate, strictly follow this format:
-                [{title:(title 1 generated), content:(content 1 generated)}, {title:(title 2 generated), content:(content 2 generated)}]
-                """, f" please return a minimum of 10 pages of content about {topics}", )
+                [{title:(title 1 generated), content:(content 1 generated)}, {title:(title 2 generated), content:(content 2 generated)}, {title:(title3 generated), content:(content 3 generated)}, {title:(title 4 generated), content:(content 4 generated)}, .....{title:(title 10 generated), content:(content 10 generated)}]
+                """ +
+                   f" please return a minimum of 10 pages of content about {topics}", )
 
     return con
 
@@ -25,7 +26,7 @@ async def content(topics):
 async def slides(topics, direc):
         while True:
             try:
-                content0 = await content(topics)
+                content0 = content(topics)
                 print("this is content" + content0)
                 content1 = json.loads(content0)
                 for slide_data in content1:

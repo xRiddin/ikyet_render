@@ -1,27 +1,12 @@
-"""Text processing functions"""
 import os
-import urllib
-from typing import Dict, Generator, Optional
-
+from urllib.parse import quote
+from typing import Dict, Generator
 from md2pdf.core import md2pdf
-from selenium.webdriver.remote.webdriver import WebDriver
-
-from ..gpt_nova import generate as ge
+from playwright.async_api import async_playwright
+from ..gpt4_ca import generate as ge
 
 
 def split_text(text: str, max_length: int = 8192) -> Generator[str, None, None]:
-    """Split text into chunks of a maximum length
-
-    Args:
-        text (str): The text to split
-        max_length (int, optional): The maximum length of each chunk. Defaults to 8192.
-
-    Yields:
-        str: The next chunk of text
-
-    Raises:
-        ValueError: If the text is longer than the maximum length
-    """
     paragraphs = text.split("\n")
     current_length = 0
     current_chunk = []
@@ -39,20 +24,7 @@ def split_text(text: str, max_length: int = 8192) -> Generator[str, None, None]:
         yield "\n".join(current_chunk)
 
 
-def summarize_text(
-    url: str, text: str, question: str, driver: Optional[WebDriver] = None
-) -> str:
-    """Summarize text using the OpenAI API
-
-    Args:
-        url (str): The url of the text
-        text (str): The text to summarize
-        question (str): The question to ask the model
-        driver (WebDriver): The webdriver to use to scroll the page
-
-    Returns:
-        str: The summary of the text
-    """
+async def summarize_text(url: str, text: str, question: str, page=None) -> str:
     if not text:
         return "Error: No text to summarize"
 
@@ -61,12 +33,10 @@ def summarize_text(
     scroll_ratio = 1 / len(chunks)
 
     for i, chunk in enumerate(chunks):
-        if driver:
-            scroll_to_percentage(driver, scroll_ratio * i)
+        if page:
+            await scroll_to_percentage(page, scroll_ratio * i)
 
         memory_to_add = f"Source: {url}\n" f"Raw content part#{i + 1}: {chunk}"
-
-        #MEMORY.add_documents([Document(page_content=memory_to_add)])
 
         messages = [create_message(chunk, question)]
 
@@ -77,72 +47,51 @@ def summarize_text(
         summaries.append(summary)
         memory_to_add = f"Source: {url}\n" f"Content summary part#{i + 1}: {summary}"
 
-        #MEMORY.add_documents([Document(page_content=memory_to_add)])
-
-
     combined_summary = "\n".join(summaries)
     messages = [create_message(combined_summary, question)]
-
-    return ge(
+    ans = ge(
         model='gpt-3.5-turbo-16k',
         messages=messages,
     )
 
+    await page.close()
 
-def scroll_to_percentage(driver: WebDriver, ratio: float) -> None:
-    """Scroll to a percentage of the page
+    return ans
 
-    Args:
-        driver (WebDriver): The webdriver to use
-        ratio (float): The percentage to scroll to
 
-    Raises:
-        ValueError: If the ratio is not between 0 and 1
-    """
+async def scroll_to_percentage(page, ratio: float) -> None:
     if ratio < 0 or ratio > 1:
         raise ValueError("Percentage should be between 0 and 1")
-    driver.execute_script(f"window.scrollTo(0, document.body.scrollHeight * {ratio});")
+    await page.evaluate(f"window.scrollTo(0, document.body.scrollHeight * {ratio});")
 
 
 def create_message(chunk: str, question: str) -> Dict[str, str]:
-    """Create a message for the chat completion
-
-    Args:
-        chunk (str): The chunk of text to summarize
-        question (str): The question to answer
-
-    Returns:
-        Dict[str, str]: The message to send to the chat completion
-    """
     return {
         "role": "user",
         "content": f'"""{chunk}""" Using the above text, answer the following'
         f' question: "{question}" -- if the question cannot be answered using the text,'
-        " simply elaborate the information on the text in depth and write very long answers. "
+        " simply summarize the text in depth. "
         "Include all factual information, numbers, stats etc if available.",
     }
 
-def write_to_file(filename: str, text: str) -> None:
-    """Write text to a file
 
-    Args:
-        text (str): The text to write
-        filename (str): The filename to write to
-    """
+async def write_to_file(filename: str, text: str) -> None:
     with open(filename, "w") as file:
         file.write(text)
 
-async def write_md_to_pdf(task: str, directory_name: str, text: str) -> None:
+
+async def write_md_to_pdf(task: str, directory_name: str, text: str) -> str:
     file_path = f"{directory_name}/{task}"
-    write_to_file(f"{file_path}.md", text)
+    await write_to_file(f"{file_path}.md", text)
     md_to_pdf(f"{file_path}.md", f"{file_path}.pdf")
     print(f"{task} written to {file_path}.pdf")
 
-    encoded_file_path = urllib.parse.quote(f"{file_path}.pdf")
+    encoded_file_path = quote(f"{file_path}.pdf")
 
     return encoded_file_path
 
-def read_txt_files(directory):
+
+async def read_txt_files(directory):
     all_text = ''
 
     for filename in os.listdir(directory):
