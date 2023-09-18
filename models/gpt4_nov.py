@@ -3,7 +3,7 @@ import time
 import openai
 
 
-def generate(user, **kwargs):
+def generate(sys, user):
     print("this is for gpt4")
     openai.api_base = 'https://api.nova-oss.com/v1'
     openai.api_key = 'nv-QcufbFJJPucp91LI4hr2N0V4x0SScIHsbkjdlWvbjWUhyMcx'
@@ -12,10 +12,10 @@ def generate(user, **kwargs):
             response = openai.ChatCompletion.create(
                 model='gpt-4-0613',
                 messages=[
-                    {
-                     'role': 'user', 'content': user},
+                    {'role': 'system', 'content': sys},
+                    {'role': 'user', 'content': user}
                 ],
-                temperature=0.2
+                temperature=0.7
             )
             choices = response['choices']
             res = choices[0]['message']['content']

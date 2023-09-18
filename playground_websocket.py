@@ -8,11 +8,12 @@ import xlrd
 import yaml
 from ebooklib import epub
 from models.claude2_file import file as cl
-from models.gpt_ca import generate as g
-from models.gpt4_ca import generate as ge
+from models.gpt3_nov import generate as g
+from models.gpt4_nov import generate as g4
 from models.gpt_nov import generate as gt
 from models.image_ocr import query as ocr
 from models.sdxl import gen as d
+from models.music_gen import music as m
 import ppt as p
 from research_agent import ResearchAgent
 import yt
@@ -91,7 +92,7 @@ class PlayGrd:
                 await yt.yt(text.replace('/ppt', "").strip(), self.websocket)
                 return
             else:
-                resp = g(kat + self.prompt)
+                resp = g(kat, self.prompt)
                 return resp
 
         if self.agent == "media":
@@ -111,11 +112,18 @@ class PlayGrd:
                 messages.append(self.prompt.replace('/content', ''))
                 res = await self.cont(', '.join(messages))
                 messages.append(res)
-                await self.websocket.send_json({'type': 'output', 'output': res})
                 print(messages)
+                return res
+            elif '/music' in self.prompt:
+                await self.websocket.send_json({'type': 'logs', 'output': 'Making music...'})
+                mus = m(self.prompt.replace('/music', ''), self.dire)
+                if mus:
+                    await self.websocket.send_json({'type': 'logs', 'output': 'music created. click on download button'})
+                else:
+                    await self.websocket.send_json({'type': 'logs', 'output': 'Error. check the console for more info'})
                 return
         else:
-            resp = await g(syst + self.prompt)
+            resp = await g(syst, self.prompt)
             return resp
 
     async def web_re(self, prompt):
@@ -148,29 +156,30 @@ Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answe
         file_path = dire
         if filename.lower().endswith('.pdf') and os.path.isfile(file_path):
             resp = await self.read_pdf(file_path)
-            resp = self.claude(resp)
-            return resp
+            respo = self.claude(resp)
+            return respo
         elif filename.lower().endswith('.epub') and os.path.isfile(file_path):
             resp = await self.read_epub(file_path)
-            resp = self.claude(resp)
-            return resp
+            respo = self.claude(resp)
+            return respo
         elif filename.lower().endswith('.jpg' or '.jpeg' or '.png') and os.path.isfile(file_path):
             resp = ocr(file_path)
             return resp
         elif filename.lower().endswith('.xls') and os.path.isfile(file_path):
             resp = read_excel(file_path)
-            resp = ge(files + prompt + resp, "gpt-3.5-turbo-16k")
-            return resp
+            respo = g(files, prompt + resp)
+            return respo
         elif filename.lower().endswith('.csv') and os.path.isfile(file_path):
             resp = read_csv(file_path)
-            resp = ge(files + prompt + resp, "gpt-3.5-turbo-16k")
-            return resp
+            respo = g(files, prompt + resp)
+            return respo
         elif filename.lower().endswith(('.py', '.c', '.cpp', '.php', '.sql', '.html')) and os.path.isfile(
                 file_path):
             resp = read_text_file(file_path)
-            resp = ge(files + prompt + resp, "gpt-4")
-            return resp
+            respo = g4(files, prompt + resp)
+            return respo
         else:
+            await self.websocket.send_json("invalid format")
             return "error"
 
     def claude(self, content):
@@ -179,39 +188,47 @@ Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answe
         return resp
 
     async def imagine(self, prompt):
-        pr = g(pic + prompt)
-        matches = re.findall(r"\*\*Prompt 1\*\*:(.*?)(?=\*\*|\Z)", pr, re.DOTALL)
-        summary = matches[0].strip()
+        pr = g(pic, prompt)
+        match = re.findall(r"\*\*Prompt 1\*\*:(.*?)(?=\*\*|\Z)", pr, re.DOTALL)
+        summary = match[0].strip()
         await self.websocket.send_json({'type': 'logs', 'output': 'Working on the picture 🖼️...Hold on!'})
-        resp = d(summary)
+        matches = re.search(r"--ar (\d+):(\d+)", summary)
+        print(matches.group(1), matches.group(2))
+        resp = d(summary, int(matches.group(1))*80, int(matches.group(2))*80)
         os.makedirs(self.dire)
         urllib.request.urlretrieve(resp, f"{self.dire}/image.png")
         await self.websocket.send_json({'type': 'path', 'output': f'{self.dire}/image.png'})
-        return resp
+        return
 
     async def adv_imagine(self, prompt):
         os.makedirs(self.dire)
         if "wop" in prompt:
             await self.websocket.send_json({'type': 'logs', 'output': f'Working on the picture  🖼️...Hold on!'})
-            resp = d(self.prompt.replace("wop", ""))
+            matches = re.search(r"--ar (\d+):(\d+)", self.prompt)
+            if matches:
+                resp = d(self.prompt.replace("wop", ""), int(matches.group(1)), int(matches.group(1)))
+            else:
+                resp = d(self.prompt.replace("wop", ""))
             urllib.request.urlretrieve(resp, f"{self.dire}/image.png")
             await self.websocket.send_json({'type': 'logs', 'output': '✅Image generated. Click on the download button.'})
             await self.websocket.send_json({'type': 'path', 'output': f'{self.dire}/image.png'})
+            return
         else:
-            pr = g(pic + prompt)
+            pr = g(pic, prompt)
             for i in range(1, 4):
                 matches = re.findall(fr"\*\*Prompt {i}\*\*:(.*?)(?=\*\*|\Z)", pr, re.DOTALL)
                 img = matches[0].strip()
                 print(img)
                 await self.websocket.send_json({'type': 'logs', 'output': f'Working on the picture {i} 🖼️...Hold on!'})
-                resp = d(img)
+                match = re.search(r"--ar (\d+):(\d+)", img)
+                resp = d(img, int(match.group(1))*80, int(match.group(1))*80)
                 urllib.request.urlretrieve(resp, f"{self.dire}/image{i}.png")
                 await self.websocket.send_json({'type': 'logs', 'output': '✅Image generated. Click on the download button.'})
                 await self.websocket.send_json({'type': 'path', 'output': f'{self.dire}/image{i}.png'})
-        return
+            return
 
     async def read_pdf(self, file_path):
-        await self.websocket.send_json({'type': 'logs', 'output': 'Reading pdf pages 📖..'})
+        await self.websocket.send_json({'type': 'logs', 'output': 'Reading pages 📖..'})
         with open(file_path, 'rb') as file:
             pdf_reader = PyPDF2.PdfReader(file)
             text = ''

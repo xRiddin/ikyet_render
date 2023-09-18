@@ -3,7 +3,7 @@ from urllib.parse import quote
 from typing import Dict, Generator
 from md2pdf.core import md2pdf
 from playwright.async_api import async_playwright
-from ..gpt4_ca import generate as ge
+from ..gpt_rev import generate as ge
 
 
 def split_text(text: str, max_length: int = 8192) -> Generator[str, None, None]:

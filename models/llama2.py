@@ -1,7 +1,7 @@
 import requests
 
 
-def generate(sys, user, *args):
+def generate(sys, user):
     headers = {
         'content-type': 'application/json',
         'referer': 'https://replicate.com/replicate/llama-2-70b-chat',
@@ -13,7 +13,7 @@ def generate(sys, user, *args):
             'top_p': 1,
             'temperature': 0.5,
             'system_prompt': sys,
-            'max_new_tokens': 1000,
+            'max_new_tokens': 10000,
             'min_new_tokens': -1,
             'repetition_penalty': 1,
             'repetition_penalty_sustain': 256,
@@ -27,6 +27,7 @@ def generate(sys, user, *args):
         json=json_data,
     )
     resp = response.json()
+    print(response)
     uuid = resp['uuid']
     print(uuid)
     while True:
@@ -42,3 +43,5 @@ def generate(sys, user, *args):
             out = ''.join(output)
             print(out)
             return out
+
+print(generate("assistant", "hi"))

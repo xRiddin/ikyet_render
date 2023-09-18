@@ -34,7 +34,7 @@ async def final(prompt, dire, websocket):
 
 async def generate_file(filepaths_string=None, prompt=None):
     chat = g.generate(
-        f'{gen}' +
+        f'{gen}',
         f"""
            We have broken up the program into per-file generation.
            Now your job is to generate only the code for the file{filepaths_string}
@@ -53,7 +53,7 @@ async def generate_file(filepaths_string=None, prompt=None):
 
 async def generate_final(filepaths_string=None, prompt=None):
     resp = g.generate(
-        f'{rewrite}' +
+        f'{rewrite}',
         f"""
                Now your job is to rewrite and correct only the code for the files: {filepaths_string}
                Make sure to have consistent filenames if you reference other files we are also generating.
@@ -71,14 +71,14 @@ async def generate_final(filepaths_string=None, prompt=None):
 
 
 async def filepath(prompt):
-    specs = g.generate(f'{spec}' + prompt)
+    specs = g.generate(spec, prompt)
 
     filepaths_string = g.generate(
         f"""
         please only list the filepaths you would write, and return them as a python array of strings.
         do not add any other explanation, only return a python array of strings.
         do not write any other explanation, you should write only a python array of strings.
-        """ + '/n' +
+        """ + '/n',
         specs
     )
     print("specs:", specs, "this is filepaths:",filepaths_string)
@@ -100,7 +100,7 @@ async def files(filepaths_string, specs):
 async def gpt41(filepaths_string, chat, specs, direct):
     while True:
         try:
-            final_code = ge.generate(gpt4 + f""" please follow everything that is said to you now: {fixs}. \n
+            final_code = ge.generate(gpt4, f""" please follow everything that is said to you now: {fixs}. \n
             these are the specifications for the files {specs}.
             these are the files you will be working on {filepaths_string}.
             this is the content you will be working on {chat}""")
@@ -111,7 +111,7 @@ async def gpt41(filepaths_string, chat, specs, direct):
             for _ in range(3):
                 print(f'error:{e}, retrying after 10s...')
                 time.sleep(10)
-            feed = g.generate(gpt4 + f""" please follow everything that is said to you now: {fixs}. \n
+            feed = g.generate(gpt4, f""" please follow everything that is said to you now: {fixs}. \n
             these are the specifications for the files {specs}.
             these are the files you will be working on {filepaths_string}.
             this is the content you will be working on {chat}""")

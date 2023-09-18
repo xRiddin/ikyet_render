@@ -3,22 +3,21 @@ import tiktoken
 import openai
 
 
-def generate(sys, user=None, **kwargs):
+def generate(sys, user=None):
     print("this is for gpt3.5-nova")
     openai.api_base = 'https://api.nova-oss.com/v1'
     openai.api_key = 'nv-QcufbFJJPucp91LI4hr2N0V4x0SScIHsbkjdlWvbjWUhyMcx'
     num_tokens = tokens(user)
     if num_tokens > 16000:
         new_messages = generate("summarize the messages", user)
-        user = None
         user = new_messages
     for _ in range(5):
         try:
             response = openai.ChatCompletion.create(
                 model='gpt-3.5-turbo-16k-0613',
                 messages=[
-                    {
-                     'role': 'user', 'content': sys + user},
+                    {'role': 'system', 'content': sys},
+                    {'role': 'user', 'content': user},
                 ],
                 temperature=0.7
             )

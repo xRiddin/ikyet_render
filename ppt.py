@@ -17,8 +17,8 @@ def content(topics):
                 Each title must corresponds to one page of content, with a maximum of 100 words per page that is size of a small essay.
                 you must only reply in python list of strings for each topic you generate, strictly follow this format:
                 [{title:(title 1 generated), content:(content 1 generated)}, {title:(title 2 generated), content:(content 2 generated)}, {title:(title3 generated), content:(content 3 generated)}, {title:(title 4 generated), content:(content 4 generated)}, .....{title:(title 10 generated), content:(content 10 generated)}]
-                """ +
-                   f" please return a minimum of 10 pages of content about {topics}", )
+                """,
+                   f" please return a minimum of 10 pages of content about {topics}")
 
     return con
 

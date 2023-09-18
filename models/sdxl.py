@@ -1,7 +1,7 @@
 import requests
 
 
-def gen(prompt):
+def gen(prompt, w=1280, h=1280):
     headers = {
         'authority': 'replicate.com',
         'accept': 'application/json',
@@ -11,8 +11,8 @@ def gen(prompt):
 
     json_data = {
         'inputs': {
-            'width': 1024,
-            'height': 1024,
+            'width': w,
+            'height': h,
             'prompt': prompt,
             'refine': 'expert_ensemble_refiner',
             'scheduler': 'DDIM',

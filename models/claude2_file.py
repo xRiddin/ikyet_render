@@ -1,8 +1,7 @@
 from .claude_api import Client
 
 
-SESSION_KEY = "__cf_bm=uc20EBxEM9OCj6h9eAN8SBVp4LL8k1jB2xUaV_b3tlU-1692503038-0-ASdmUD23xjZ/dRFfCs80mLtiPBqGJ71JsDa/RSdgeHOGHYUfw+6cDIyaZITJ4BdbWmS16aja8Y9njY1cWKovuWI=; cf_clearance=9akkMJnkdtIToPp.1WNeAh8cX5swRDIG.VoD8IBoC9A-1692503043-0-1-d0efbd5d.2346dc50.87eee2bd-0.2.1692503043; intercom-device-id-lupk8zyo=9ee9e7a4-8719-480c-b13b-315d81b0546e; sessionKey=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; intercom-session-lupk8zyo=cWE4ajNiNDRZYkhPYXlNQVFicDFwSDByRzVUOFdQNXJWU2hzWXBEM0pNZWhxaW5jS1E1bDd1ZEFzZGNENzcrMy0tS01FK2FJekZLQUp3Mm9BOHhxWExMUT09--e8a1d936b26ba13e78bfd8e0a2c44d85567a40af"
-
+SESSION_KEY = "__cf_bm=RNkxkN5Pnf8x2.bhA8tjTbHK.D8hVJbjT5JG2ma9LwA-1694918420-0-AV7bo+LTz6IVIVUy3+7FGFoYsYXPd8fRHzvIw7X548cCftVlhdjRSa7cC7Ojte4qsK1TANBcF76YfceExCbweLA=; cf_clearance=2m7AzMArl5_N2ckA3cmUGb_vwgNTF5NeRcolmJfxd6E-1694918423-0-1-9ce7f260.a4aafa5c.cbe6ad80-0.2.1694918423; intercom-device-id-lupk8zyo=d88ca19d-429d-4280-bfc0-736aaf3cf335; sessionKey=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; intercom-session-lupk8zyo=aDRhQUR2SlpDN1NKb2JzQ2ZDdFNlK2VmS3l6UXdQQXFJZFB0cGFoODlQN0tyZDVCaHpJVW1DS0g4RExqemQyZi0tMGRyYkhHeG9DSGl3VGdMNHFQTGx4Zz09--6143d3d68836a0d48d989f306644cdec76e9e3db"
 
 def file(files):
     print("this is claude2")

@@ -10,7 +10,7 @@ def generate(messages, model):
         try:
             response = openai.ChatCompletion.create(
                 model=model,
-                messages= messages,
+                messages=messages,
                 temperature=0.7
             )
             choices = response['choices']

@@ -2,7 +2,7 @@ import openai
 import time
 
 
-def generate(user):
+def generate(sys, user):
     print("this is for gpt3.5-nova")
     openai.api_base = 'https://api.nova-oss.com/v1'
     openai.api_key = 'nv-QcufbFJJPucp91LI4hr2N0V4x0SScIHsbkjdlWvbjWUhyMcx'
@@ -12,7 +12,11 @@ def generate(user):
                 model='gpt-3.5-turbo-16k-0613',
                 messages=[
                     {
-                     'role': 'user', 'content': user},
+                        'role': 'system', 'content': sys
+                    },
+                    {
+                        'role': 'user', 'content': user
+                    }
                 ],
                 temperature=0.7
             )
