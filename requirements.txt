@@ -4,7 +4,6 @@ aiosignal
 anyio
 asgiref
 async-timeout
-asyncio
 attrs
 bs4
 black

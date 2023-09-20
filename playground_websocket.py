@@ -122,9 +122,12 @@ class PlayGrd:
                 else:
                     await self.websocket.send_json({'type': 'logs', 'output': 'Error. check the console for more info'})
                 return
-        else:
-            resp = await g(syst, self.prompt)
-            return resp
+            else:
+                resp = g(sparkle, self.prompt)
+                return resp
+
+        elif self.agent == "advisor":
+            resp = await g()
 
     async def web_re(self, prompt):
         assistant = ResearchAgent(prompt, self.agent, self.dire, self.websocket)

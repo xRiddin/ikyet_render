@@ -1,4 +1,4 @@
-import os, time
+import os, time, yaml, tiktoken
 import threading
 import shutil
 import tempfile
@@ -8,6 +8,7 @@ from fastapi import FastAPI, File, UploadFile, WebSocket, WebSocketDisconnect, R
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from models.gpt_nova import generate as g
 
 from output_adv import final as m
 from output_quick import director
@@ -24,6 +25,14 @@ current_directory = None
 file_path = None
 manager = WebSocketManager()
 templates = Jinja2Templates(directory="client")
+
+with open('config.yml', 'r', encoding='utf-8') as config_file:
+    config = yaml.safe_load(config_file)
+    jenn = config['jen']
+
+messages = [{'role': 'system', 'content': jenn}]
+websocket_connections = {}
+
 @app.get("/")
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "report": None})
@@ -66,6 +75,33 @@ async def playgrd(websocket: WebSocket):
                 print(res)
                 await websocket.send_json({'type': 'output', 'output': res})
         except WebSocketDisconnect:
+            break
+
+
+@app.websocket("/jen")
+async def jen(websocket: WebSocket):
+    await websocket.accept()
+    #websocket_connections[client_id] = websocket
+    while True:
+        try:
+            data = await websocket.receive_json()
+            print(data)
+            prompt = data["input"]
+            messages.append({'role': 'user', 'content': prompt})
+            res = g(messages, 'gpt-3.5-turbo-16k')
+            messages.append({'role': 'assistant', 'content': res})
+            '''
+            num_tokens = tokens(messages['content'])
+            if num_tokens > 16000:
+              new_messages = g("summarize the messages", user)
+              user = new_messages
+            '''
+            print(messages)
+            await websocket.send_json({'output': res})
+        except WebSocketDisconnect:
+            print("websocket disconnected")
+            #del websocket_connections[client_id]
+            await websocket.close()
             break
 
 
@@ -154,5 +190,10 @@ def generate_directory_name():
     directory = director()
     return directory
 
+def tokens(message):
+    encoding = tiktoken.get_encoding("cl100k_base")
+    num_tokens = len(encoding.encode(message))
+    print("number of tokens:", num_tokens)
+    return num_tokens
 import uvicorn
 uvicorn.run(app, host='0.0.0.0', port=80)

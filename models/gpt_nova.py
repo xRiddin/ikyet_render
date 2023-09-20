@@ -6,6 +6,7 @@ def generate(messages, model):
     print("this is for gpt nova")
     openai.api_base = 'https://api.nova-oss.com/v1'
     openai.api_key = 'nv-QcufbFJJPucp91LI4hr2N0V4x0SScIHsbkjdlWvbjWUhyMcx'
+
     for _ in range(5):
         try:
             response = openai.ChatCompletion.create(
@@ -20,3 +21,4 @@ def generate(messages, model):
         except Exception as e:
             print(f'error:{e}, retrying in 20sec')
             time.sleep(10)
+

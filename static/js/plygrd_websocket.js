@@ -14,7 +14,7 @@ const download_button = document.getElementById('download_button')
 const user_image = `<img src="${url_prefix}/images/user.png" alt="User Avatar">`;
 const gpt_image = `<img src="${url_prefix}/images/gpt.png" alt="GPT Avatar">`;
 let prompt_lock = false;
-
+let socket;
 
 hljs.addPlugin(new CopyButtonPlugin());
 
@@ -47,6 +47,93 @@ const remove_cancel_button = async () => {
 	}, 300);
 };
 */
+function genclientid() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let clientId = '';
+  let length = 16
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    clientId += characters.charAt(randomIndex);
+  }
+
+  return clientId;
+}
+
+const jen = () => {
+
+		listenToSockEvent();
+	};
+
+	const listenToSockEvent=()=>{
+		if (socket && socket.readyState === WebSocket.OPEN) {
+    console.log('WebSocket connection already exists.');
+	const converter = new showdown.Converter();
+jenws(socket, converter);
+  }
+		else {
+			console.log('creating new websocket connection')
+			const {protocol, host, pathname} = window.location;
+			const client_id = genclientid()
+			const ws_uri = `${protocol === 'https:' ? 'wss:' : 'ws:'}//${host}/jen`;
+			const converter = new showdown.Converter();
+			socket = new WebSocket(ws_uri);
+			window.token = message_id();
+			jenws(socket, converter);
+		}
+	};
+
+const jenws=(socket, converter)=>{
+	console.log('entered jenws')
+	function sendMessage(message) {
+  if (socket.readyState === WebSocket.OPEN) {
+    socket.send(`${JSON.stringify(message)}`);
+  } else {
+    console.error('WebSocket is not open for sending messages.');
+  }
+}
+		socket.onmessage = (event) => {
+			try {
+				const data = JSON.parse(event.data);
+				const responseText = data.output;
+				console.log(data)
+				console.log(responseText)
+				writeOutput(data, converter)
+				updateScroll()
+
+			//add_message(window.conversation_id, "assistant", responseText);
+
+				prompt_lock = false;
+
+			} catch(error){
+				console.error("error parsing json:", error)
+			}
+
+		};
+
+		socket.onopen = (event) => {
+			try {
+				if (message_input.value !== ``) {
+					const input = message_input.value
+
+					console.log(input)
+					const requestData = {
+						input: input
+					};
+					console.log(requestData);
+					sendMessage(requestData)
+					add_user_message_box(input);
+					add_message(window.conversation_id, "user", input);
+					message_input.value = ``;
+
+				} else {
+
+				}
+			} catch (error){
+				add_gpt_message_box("Error occurred check in console:", error)
+			}
+		}
+}
 const startResearch = () => {
 
 		listenToSockEvents();
@@ -66,7 +153,7 @@ const startResearch = () => {
 				const responseText = data.output;
 				console.log(data)
 				console.log(responseText)
-				if (responseText.includes("https://pdxt.replicate.delivery")) {
+				if (responseText.includes("https://pdxt.replicate.delivery") || responseText.includes("discord")) {
 					loadImage(responseText);
 				} else {
 					if (data.type === 'logs') {
@@ -539,12 +626,22 @@ window.onload = async () => {
 		if (prompt_lock) return;
 		if (evt.key === 13 && message_input.value.trim() !== "") {
 			evt.preventDefault();
+			if (model.options[model.selectedIndex].value === "advisor"){
+			await jen();
+		}
+		else{
 			await startResearch();
+		}
 		}
 
 		if (evt.key === "Enter" && !evt.shiftKey) {
 			evt.preventDefault();
+			if (model.options[model.selectedIndex].value === "advisor"){
+			await jen();
+		}
+		else{
 			await startResearch();
+		}
 		}
 	});
 
@@ -552,7 +649,13 @@ window.onload = async () => {
 		event.preventDefault();
 		if (prompt_lock) return;
 		message_input.blur();
-		await startResearch();
+
+		if (model.options[model.selectedIndex].value === "advisor"){
+			await jen();
+		}
+		else{
+			await startResearch();
+		}
 	});
 
 	await register_settings_localstorage();
