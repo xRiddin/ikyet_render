@@ -155,4 +155,4 @@ def generate_directory_name():
     return directory
 
 import uvicorn
-uvicorn.run(app, host='0.0.0.0', port=80)
+uvicorn.run(app, host='0.0.0.0', port=8000)
