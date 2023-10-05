@@ -196,4 +196,4 @@ def tokens(message):
     print("number of tokens:", num_tokens)
     return num_tokens
 import uvicorn
-uvicorn.run(app, host='0.0.0.0', port=80)
+uvicorn.run(app, host='0.0.0.0', port=8000)
