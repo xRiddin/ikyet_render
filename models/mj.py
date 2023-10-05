@@ -5,7 +5,7 @@ import re
 async def mj(prompt, websocket):
     cookies = {
         'sb-bjbdsdwatviaxduylrdq-auth-token': '%5B%22eyJhbGciOiJIUzI1NiIsImtpZCI6ImQ4STRQOFppVVRWV25NaUwiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNjk1MjcxNzI3LCJpYXQiOjE2OTUxODUzMjcsImlzcyI6Imh0dHBzOi8vYmpiZHNkd2F0dmlheGR1eWxyZHEuc3VwYWJhc2UuY28vYXV0aC92MSIsInN1YiI6ImQ0ZTNiMmUzLWI2ODUtNGQ3Zi1iNzAwLTg2NDFiZjU3Y2ViNCIsImVtYWlsIjoicmVnYXIzNDc4OUB1dHdva28uY29tIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6e30sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE2OTUxODUzMjd9XSwic2Vzc2lvbl9pZCI6ImY4MmE1MjM3LWU4Y2UtNDA4Yy05ZWI5LTdhM2UxZTYwYzMyYSJ9.FHDMWtrElFDEB2r7RA_d6kAZak-yaUW3yrBqBD5h4cA%22%2C%22lxoOQsZPrTgxz2LGlVUKBQ%22%2Cnull%2Cnull%2Cnull%5D',
-        'cf_clearance': 'xaHj.X__pbxcx7Yt8Kjkh5x1k6bfgNGyXrEQbRtpi90-1695194634-0-1-cb54fb7a.2e5325a7.9c55a49a-250.2.1695194634',
+        'cf_clearance': 'yP3ypG2w0aqKltPvxL72W2ggLxFk0YcAICrK3N60nOE-1691774586-0-1-1a7d5828.2ea11aa9.4667b4e9-0.2.1691774586',
     }
 
     headers = {
@@ -90,6 +90,7 @@ async def mj(prompt, websocket):
             status = db['status']
             if status == 'SUCCESS':
                 img = db['imageurl']
+                print(img)
                 return img
             else:
                 print(db['imageurl'])
@@ -98,3 +99,4 @@ async def mj(prompt, websocket):
 
 def handle_event(event_data):
     print(event_data)
+

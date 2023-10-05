@@ -14,6 +14,7 @@ from models.gpt_nov import generate as gt
 from models.image_ocr import query as ocr
 from models.sdxl import gen as d
 from models.music_gen import music as m
+from models.mj import mj
 import ppt as p
 from research_agent import ResearchAgent
 import yt
@@ -121,6 +122,11 @@ class PlayGrd:
                     await self.websocket.send_json({'type': 'logs', 'output': 'music created. click on download button'})
                 else:
                     await self.websocket.send_json({'type': 'logs', 'output': 'Error. check the console for more info'})
+                return
+            elif '/mj' in self.prompt:
+                await m(self.prompt.replace('/mj', ''), self.websocket)
+                return
+            elif '/tts' in self.prompt:
                 return
             else:
                 resp = g(sparkle, self.prompt)
