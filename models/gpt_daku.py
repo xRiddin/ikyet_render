@@ -23,5 +23,3 @@ def generate(messages, model):
         except Exception as e:
             print(f'error:{e}, retrying in 20sec')
             time.sleep(10)
-
-print(generate([{'role': 'user', 'content': 'hi'}], ""))

@@ -1,13 +1,24 @@
 import requests
 
 
-def query(file):
-    API_URL = "https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large"
-    headers = {"Authorization": "Bearer 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"}
+def generate(file):
+    print("this is caption_daku")
+    url = 'https://api.daku.tech/v1/images/interrogations'
+    headers = {
+        'accept': 'application/json',
+        'Authorization': f'Bearer sk-WyEvXylgYH4+XGAsT3BlbkFJWyEvXylgYH4+XGAs'
+    }
 
-    with open(file, "rb") as f:
-        data = f.read()
-    response = requests.post(API_URL, headers=headers, data=data)
-    respon = response.json()
-    resp = respon[0]
-    return resp['generated_text']
+    files = {
+        'file': open(file, 'rb'),
+        'model': (None, 'stable-caption'),
+    }
+    for _ in range(5):
+        try:
+            response = requests.post(url, headers=headers, files=files)
+            res = response.json()
+            caption = res['results']['caption']
+            print(caption)
+            return caption
+        except Exception as e:
+            print(e, 'retrying')
