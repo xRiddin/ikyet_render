@@ -12,11 +12,11 @@ from models.claude2_file import file as cl
 from models.gpt3_nov import generate as g
 from models.gpt4_nov import generate as g4
 from models.gpt_nov import generate as gt
-from models.image_ocr import generate as ocr
+from models.image_ocr import kosmos as ocr
 from models.sdxl import gen as d
 from models.music_gen import music as m
-from models.tts_daku import generate as tts
-from models.mj import mj
+from models.tts import generate as tts
+# from models.mj import mj
 import ppt as p
 from research_agent import ResearchAgent
 import yt
