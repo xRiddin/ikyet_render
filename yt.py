@@ -40,13 +40,18 @@ async def yt(link, websockets):
             json=json_data,
         )
         resp = response.json()
+        print(resp)
         if resp['status'] == 'error':
             print(resp['error'])
+        elif resp['usage']['batches']['queriesConsumed'] is 0:
+            print("working but error")
+            await websockets.send_json({'type': 'output', 'output': "ERROR ‼️ upload a lengthy video or other video.."})
+            break
         else:
             if resp['status'] == 'success':
                 summary = resp['data']['summary']
                 print(summary)
-                await websockets.send_json({'type': 'output', 'output': "Summary of the YouTube Video:"})
+                await websockets.send_json({'type': 'output', 'output': " ✅Summary of the YouTube Video:"})
                 for topics in summary:
                     title = topics['content']
                     await websockets.send_json({'type': "logs", 'output': '## ' + title})
@@ -55,6 +60,7 @@ async def yt(link, websockets):
                         print("-" + points)
                         await websockets.send_json({'type': "logs", 'output': '- ' + points})
                     print("heading:", title)
+                return
 
 def getVideoId(youtube_link):
     video_id = youtube_link.split("v=")
