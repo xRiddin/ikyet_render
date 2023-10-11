@@ -1,14 +1,31 @@
 from gradio_client import Client
 from moviepy.editor import concatenate_audioclips, AudioFileClip
-import tempfile
 import os
+
+
+def split_message(message, max_length):
+    words = message.split()
+    message_parts = []
+    current_part = ""
+
+    for word in words:
+        if len(current_part) + len(word) + 1 <= max_length:
+            current_part += word + " "
+        else:
+            message_parts.append(current_part.strip())
+            current_part = word + " "
+
+    if current_part:
+        message_parts.append(current_part.strip())
+
+    return message_parts
 
 
 def generate(message, dire, model="Charlotte"):
     client = Client("https://elevenlabs-tts.hf.space/")
     max_length = 250
     audio_clips = []
-    message_parts = [message[i:i+max_length] for i in range(0, len(message), max_length)]
+    message_parts = split_message(message, max_length)
     for message_part in message_parts:
         audio_path = client.predict(message_part, model, fn_index=0)
         audio_clip = AudioFileClip(audio_path)
