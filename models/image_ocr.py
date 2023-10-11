@@ -15,7 +15,7 @@ def kosmos(url):
     print(', '.join(output))
     return output
 
-kosmos("https://pbxt.replicate.delivery/S2v8ZHsiD3bNLxjrWqwlafZLOefLzjdd69622xRncyCGCTZjA/out-0.png")
+
 def clipi2(url):
     client = Client("https://fffiloni-clip-interrogator-2.hf.space/")
     result = client.predict(url, "best",  2,  # int | float (numeric value between 2 and 24) in 'best mode max flavors' Slider component
@@ -25,5 +25,3 @@ def clipi2(url):
     output = result[0]
     print(output)
     return output
-
-clipi2("https://pbxt.replicate.delivery/S2v8ZHsiD3bNLxjrWqwlafZLOefLzjdd69622xRncyCGCTZjA/out-0.png")

@@ -1,4 +1,5 @@
 import os, time, yaml, tiktoken
+import uvicorn
 import threading
 import shutil
 import tempfile
@@ -195,5 +196,6 @@ def tokens(message):
     num_tokens = len(encoding.encode(message))
     print("number of tokens:", num_tokens)
     return num_tokens
-import uvicorn
+
+
 uvicorn.run(app, host='0.0.0.0', port=8000)

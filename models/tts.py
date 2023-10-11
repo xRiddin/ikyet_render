@@ -4,7 +4,7 @@ import tempfile
 import os
 
 
-def generate(message, model="Charlotte"):
+def generate(message, dire, model="Charlotte"):
     client = Client("https://elevenlabs-tts.hf.space/")
     max_length = 250
     audio_clips = []
@@ -14,7 +14,7 @@ def generate(message, model="Charlotte"):
         audio_clip = AudioFileClip(audio_path)
         audio_clips.append(audio_clip)
     audio_final = concatenate_audioclips(audio_clips)
-    audio_final_path = os.path.join(tempfile.gettempdir(), "audio_final.mp3")
+    audio_final_path = os.path.join(dire, "audio.mp3")
     audio_final.write_audiofile(audio_final_path, codec="mp3")
     return audio_final_path
 
