@@ -145,16 +145,14 @@ class PlayGrd:
         return info + report
 
     async def text2speech(self):
-        match = re.match(r"^/tts /m (.*) ", self.prompt)
+        match = re.match(r"^/tts /m\s+(\w+) ", self.prompt)
         await self.websocket.send_json(
             {'type': 'logs', 'output': "🎤Voice artists bringing your script to life with their recordings..."})
         os.makedirs(f"{self.dire}")
         if match:
-            model = "voice-" + match.group(1)
-            print(model)
-            tt = tts(self.prompt.replace('/tts', ''), self.dire, model)
+            tt = tts(self.prompt.replace(match.group(1), ''), self.dire, match.group(1))
         else:
-            tt = tts(self.prompt.replace('/tts', ''), self.dire)
+            tt = tts(self.prompt.replace(match.group(1), ''), self.dire, "Charlotte")
             """
         opener = urllib.request.build_opener()
         opener.addheaders = [('User-agent', 'Mozilla/5.0')]
