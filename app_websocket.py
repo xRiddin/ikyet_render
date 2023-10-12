@@ -64,14 +64,12 @@ async def playgrd(websocket: WebSocket):
             global file_path
             if file_path:
                 fin = PlayGrd(prompt, file_path, model, websocket, web)
-                await websocket.send_json({'type': 'logs', 'output': 'Initializing an agent 🤖...'})
                 res = await fin.final()
                 print(res)
                 await websocket.send_json({'type': 'output', 'output': res})
                 file_path = None
             else:
                 fin = PlayGrd(prompt, current_directory, model, websocket, web)
-                await websocket.send_json({'type': 'logs', 'output': 'Initializing an agent 🤖...'})
                 res = await fin.final()
                 print(res)
                 await websocket.send_json({'type': 'output', 'output': res})
