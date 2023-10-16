@@ -5,7 +5,7 @@ import time
 def generate(sys, user):
     print("this is for gpt3.5-nova")
     openai.api_base = 'https://api.nova-oss.com/v1'
-    openai.api_key = 'nv-QcufbFJJPucp91LI4hr2N0V4x0SScIHsbkjdlWvbjWUhyMcx'
+    openai.api_key = 'nv2-jtZwohKYBXLUpoMjeU84_NOVA_v2_0bdZXg16HJqPv7h5KUzB'
     for _ in range(5):
         try:
             response = openai.ChatCompletion.create(
