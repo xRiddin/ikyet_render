@@ -8,6 +8,7 @@ from sys import platform
 
 import asyncio
 from bs4 import BeautifulSoup
+from requests.compat import urljoin
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service
@@ -16,8 +17,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.firefox import GeckoDriverManager
-from webdriver_manager.chrome import ChromeDriverManager
-from requests.compat import urljoin
+
 from ..web import text as summary
 from ..web.config import Config
 
@@ -52,7 +52,6 @@ async def async_browse(url: str, question: str) -> str:
     except Exception as e:
         print(f"An error occurred while processing the url {url}: {e}")
         return f"Error processing the url {url}: {e}"
-
 
 
 def browse_website(url: str, question: str) -> tuple[str, WebDriver]:
@@ -104,7 +103,6 @@ def scrape_text_with_selenium(url: str) -> tuple[WebDriver, str]:
     options.add_argument(CFG.user_agent)
     options.add_argument('--headless')
     options.add_argument("ChromeDriverManager().install()")
-
 
     if CFG.selenium_web_browser == "firefox":
         service = Service(executable_path=GeckoDriverManager().install())

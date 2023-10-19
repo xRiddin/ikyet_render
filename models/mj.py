@@ -1,5 +1,6 @@
-import aiohttp
 import re
+
+import aiohttp
 
 
 async def mj(prompt, websocket):
@@ -49,7 +50,8 @@ async def mj(prompt, websocket):
     mj_id = 0
 
     async with aiohttp.ClientSession() as session:
-        response = await session.post('https://chat10.fastgpt.me/api/command', cookies=cookies, headers=headers, json=json_data, stream=True)
+        response = await session.post('https://chat10.fastgpt.me/api/command', cookies=cookies, headers=headers,
+                                      json=json_data, stream=True)
         async for line in response.content.iter_chunked(1024):
             if line:
                 decoded_line = line.decode('utf-8')
@@ -85,7 +87,8 @@ async def mj(prompt, websocket):
     while True:
         async with aiohttp.ClientSession() as session:
             respons = await session.get(
-            f'https://bjbdsdwatviaxduylrdq.supabase.co/rest/v1/user_mj_tasks?select=*&id=eq.{mj_id}', headers=header,)
+                f'https://bjbdsdwatviaxduylrdq.supabase.co/rest/v1/user_mj_tasks?select=*&id=eq.{mj_id}',
+                headers=header, )
             db = await respons.json()
             status = db['status']
             if status == 'SUCCESS':
@@ -97,6 +100,6 @@ async def mj(prompt, websocket):
                 await websocket.send_json({'type': 'links'})
                 pass
 
+
 def handle_event(event_data):
     print(event_data)
-

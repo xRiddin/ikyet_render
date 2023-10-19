@@ -11,9 +11,9 @@ def generate(sys, user):
         'inputs': {
             'top_k': 250,
             'top_p': 1,
-            'temperature': 0.5,
+            'temperature': 0.7,
             'system_prompt': sys,
-            'max_new_tokens': 10000,
+            'max_new_tokens': 4000,
             'min_new_tokens': -1,
             'repetition_penalty': 1,
             'repetition_penalty_sustain': 256,
@@ -38,10 +38,7 @@ def generate(sys, user):
         if data == "processing":
             print(data)
         else:
-            print(data)
             output = respp['prediction']['output']
             out = ''.join(output)
             print(out)
             return out
-
-print(generate("assistant", "hi"))

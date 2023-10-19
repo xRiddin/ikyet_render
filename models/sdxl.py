@@ -46,4 +46,3 @@ def gen(prompt, w=1280, h=1280):
                 output = res['prediction']['output']
                 print(output[0])
                 return output[0]
-

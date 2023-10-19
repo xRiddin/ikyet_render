@@ -22,12 +22,13 @@ def generate_report_prompt(question, research_summary):
     Returns: str: The report prompt for the given question and research summary
     """
 
-    return f'"""{research_summary}""" Using the above information, answer the following'\
-           f' question or topic: "{question}" in a detailed report --'\
+    return f'"""{research_summary}""" Using the above information, answer the following' \
+           f' question or topic: "{question}" in a detailed report --' \
            " The report should focus on the answer to the question, should be well structured, informative," \
-           " in depth, with facts and numbers if available, a minimum of 14,200 tokens/words(that's equal to 20 pages in a novel) and with markdown syntax and apa format. "\
-            "You MUST determine your own concrete and valid opinion based on the information found. Do NOT deter to general and meaningless conclusions." \
+           " in depth, with facts and numbers if available, a minimum of 14,200 tokens/words(that's equal to 20 pages in a novel) and with markdown syntax and apa format. " \
+           "You MUST determine your own concrete and valid opinion based on the information found. Do NOT deter to general and meaningless conclusions." \
            "Write all source urls at the end of the report in apa format"
+
 
 def generate_search_queries_prompt(question):
     """ Generates the search queries prompt for the given question.
@@ -64,11 +65,12 @@ def generate_outline_report_prompt(question, research_summary):
     Returns: str: The outline report prompt for the given question and research summary
     """
 
-    return f'"""{research_summary}""" Using the above information, generate an outline for a research report in Markdown syntax'\
-           f' for the following question or topic: "{question}". The outline should provide a well-structured framework'\
+    return f'"""{research_summary}""" Using the above information, generate an outline for a research report in Markdown syntax' \
+           f' for the following question or topic: "{question}". The outline should provide a well-structured framework' \
            ' for the research report, including the main sections, subsections, and key points to be covered.' \
            ' The research report should be detailed, informative, in-depth, and a minimum of 14,200 tokens/words(that is equal to 20 pages in a novel)' \
            ' Use appropriate Markdown syntax to format the outline and ensure readability.'
+
 
 def generate_concepts_prompt(question, research_summary):
     """ Generates the concepts prompt for the given question.
@@ -77,8 +79,8 @@ def generate_concepts_prompt(question, research_summary):
     Returns: str: The concepts prompt for the given question
     """
 
-    return f'"""{research_summary}""" Using the above information, generate a list of 5 main concepts to learn for a research report'\
-           f' on the following question or topic: "{question}". The outline should provide a well-structured framework'\
+    return f'"""{research_summary}""" Using the above information, generate a list of 5 main concepts to learn for a research report' \
+           f' on the following question or topic: "{question}". The outline should provide a well-structured framework' \
            'You must respond with a list of strings in the following format: ["concepts 1", "concepts 2", "concepts 3", "concepts 4, concepts 5"]'
 
 
@@ -91,11 +93,12 @@ def generate_lesson_prompt(concept):
         str: The lesson prompt for the given concept.
     """
 
-    prompt = f'generate a comprehensive lesson about {concept} in Markdown syntax. This should include the definition'\
-    f'of {concept}, its historical background and development, its applications or uses in different'\
-    f'fields, and notable events or facts related to {concept}.'
+    prompt = f'generate a comprehensive lesson about {concept} in Markdown syntax. This should include the definition' \
+             f'of {concept}, its historical background and development, its applications or uses in different' \
+             f'fields, and notable events or facts related to {concept}.'
 
     return prompt
+
 
 def get_report_by_type(report_type):
     report_type_mapping = {
@@ -104,6 +107,7 @@ def get_report_by_type(report_type):
         'outline_report': generate_outline_report_prompt
     }
     return report_type_mapping[report_type]
+
 
 def auto_agent_instructions():
     return """

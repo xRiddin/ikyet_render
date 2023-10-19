@@ -1,8 +1,9 @@
 import os
-from urllib.parse import quote
 from typing import Dict, Generator
+from urllib.parse import quote
+
 from md2pdf.core import md2pdf
-from playwright.async_api import async_playwright
+
 from ..gpt_rev import generate as ge
 
 
@@ -69,9 +70,9 @@ def create_message(chunk: str, question: str) -> Dict[str, str]:
     return {
         "role": "user",
         "content": f'"""{chunk}""" Using the above text, answer the following'
-        f' question: "{question}" -- if the question cannot be answered using the text,'
-        " simply summarize the text in depth. "
-        "Include all factual information, numbers, stats etc if available.",
+                   f' question: "{question}" -- if the question cannot be answered using the text,'
+                   " simply summarize the text in depth. "
+                   "Include all factual information, numbers, stats etc if available.",
     }
 
 

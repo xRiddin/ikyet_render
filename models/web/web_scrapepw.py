@@ -1,9 +1,11 @@
-from playwright.async_api import async_playwright
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 from pathlib import Path
-from ..web.text_pw import summarize_text
+from urllib.parse import urljoin
+
+from bs4 import BeautifulSoup
+from playwright.async_api import async_playwright
+
 from ..web.config import Config
+from ..web.text_pw import summarize_text
 
 FILE_DIR = Path(__file__).parent.parent
 CFG = Config()
@@ -19,21 +21,20 @@ async def get_text(page_content):
 
 
 BLOCK_RESOURCE_TYPES = [
-  'image',
-  'imageset',
-  'media',
-  'stylesheet'
+    'image',
+    'imageset',
+    'media',
+    'stylesheet'
 ]
-
 
 # we can also block popular 3rd party resources like tracking:
 BLOCK_RESOURCE_NAMES = [
-  'analytics',
-  'cdn.api.twitter',
-  'facebook',
-  'google',
-  'google-analytics',
-  'googletagmanager',
+    'analytics',
+    'cdn.api.twitter',
+    'facebook',
+    'google',
+    'google-analytics',
+    'googletagmanager',
 ]
 
 

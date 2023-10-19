@@ -1,9 +1,11 @@
-import requests
 import os
+
+import requests
 
 
 def music(prompt, dire):
-    tokens = ['eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjZ4amxzNTlibnpzbEI3RlB4b3Y3dyJ9.eyJpc3MiOiJodHRwczovL3N0YWJsZWF1ZGlvLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2NTA1MjEwZTU2YTYxZjc2MjhkZWQ5NzYiLCJhdWQiOlsiaHR0cHM6Ly9zdGFibGVhdWRpby5jb20iLCJodHRwczovL3N0YWJsZWF1ZGlvLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2OTUwMDg3NDEsImV4cCI6MTY5NTA5NTE0MSwiYXpwIjoiTnJtRkFuN1I5WUV0WkFLaVhqYkg1R2Q5S0hCa1ExMHgiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIG9mZmxpbmVfYWNjZXNzIiwicGVybWlzc2lvbnMiOltdfQ.VBO6YjJiowyHPiEi_rADiYbiv9xIAVvwv1ZuATx-RiDrT3mfbbmxbn4LeuIkFFoPIcsZv5gZmju6EbykRNLnHBHJU1SVbpLs2-IzzrsfXEKXlivN_d_eKZ2-OOnmd-oY6AcxfXCbgJ499_5PZCEXPNqklkSqKde35jE4d7Gp7-eYaSaclmL5r5quh9VDykAdfX8PigbPy_jiMI9O76WV_-gMPlyR85e3zChSHoyaRvdJ_O_3GhEWHD9YtEtYuVVoGNjuwKMVYm2m0M6uiN2NMuFOgHyQ7P2BTyokvfC743OvXX1ySIf7dDpoa2UMhThvHKhDMtCASYopmWoG8v2EPQ',
+    tokens = [
+        'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjZ4amxzNTlibnpzbEI3RlB4b3Y3dyJ9.eyJpc3MiOiJodHRwczovL3N0YWJsZWF1ZGlvLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2NTA1MjEwZTU2YTYxZjc2MjhkZWQ5NzYiLCJhdWQiOlsiaHR0cHM6Ly9zdGFibGVhdWRpby5jb20iLCJodHRwczovL3N0YWJsZWF1ZGlvLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2OTUwMDg3NDEsImV4cCI6MTY5NTA5NTE0MSwiYXpwIjoiTnJtRkFuN1I5WUV0WkFLaVhqYkg1R2Q5S0hCa1ExMHgiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIG9mZmxpbmVfYWNjZXNzIiwicGVybWlzc2lvbnMiOltdfQ.VBO6YjJiowyHPiEi_rADiYbiv9xIAVvwv1ZuATx-RiDrT3mfbbmxbn4LeuIkFFoPIcsZv5gZmju6EbykRNLnHBHJU1SVbpLs2-IzzrsfXEKXlivN_d_eKZ2-OOnmd-oY6AcxfXCbgJ499_5PZCEXPNqklkSqKde35jE4d7Gp7-eYaSaclmL5r5quh9VDykAdfX8PigbPy_jiMI9O76WV_-gMPlyR85e3zChSHoyaRvdJ_O_3GhEWHD9YtEtYuVVoGNjuwKMVYm2m0M6uiN2NMuFOgHyQ7P2BTyokvfC743OvXX1ySIf7dDpoa2UMhThvHKhDMtCASYopmWoG8v2EPQ',
         'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjZ4amxzNTlibnpzbEI3RlB4b3Y3dyJ9.eyJpc3MiOiJodHRwczovL3N0YWJsZWF1ZGlvLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2NTA1Mjc2NWE2NmU4OGZiM2U4ZGVkOTEiLCJhdWQiOlsiaHR0cHM6Ly9zdGFibGVhdWRpby5jb20iLCJodHRwczovL3N0YWJsZWF1ZGlvLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2OTQ5NjkyNjgsImV4cCI6MTY5NTA1NTY2OCwiYXpwIjoiTnJtRkFuN1I5WUV0WkFLaVhqYkg1R2Q5S0hCa1ExMHgiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIG9mZmxpbmVfYWNjZXNzIiwicGVybWlzc2lvbnMiOltdfQ.lT5XQmaATnzt3ONLb7N_TZtV_PA3-2MeAMG0_vmFilmaFjEjpu-EOl8Aovrd_kry6S7_uoMueFc46t71rk2hNrUQQUZWTJWu7Xc7XvQlQfkKH7KVBDhTaX3giNz1Y46MBOOI8ogDB-AZKIg7MprRj5AYfHNF5ONHNeBU2zI9Q58tN7S5wMPfyqU-C4Fr7-HjvJpVpsoama6hmIZyYUJ6XBogCsYw81k4L2Ey7zMObbxSxPkdzoiGlhZJpy3-DNNlMfolAfs_eHCpBJ4cXRGsnsNiXnOnEoCB-DFc8K13o3L8mGw6MLPOsNa7D8_jFcRnkWnNYocHMhDdx6NUW9ogbw'
     ]
     try:
@@ -48,8 +50,8 @@ def music(prompt, dire):
                         return True
                     else:
                         print("Failed to download audio:", musics.status_code)
-                    # audio = AudioSegment.from_file("audio.mp3")
-                    # play(audio)
+                        # audio = AudioSegment.from_file("audio.mp3")
+                        # play(audio)
                         return False
                 else:
                     pass

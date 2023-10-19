@@ -3,8 +3,8 @@ import time
 
 import yaml
 
-from models import gpt3_nov as g, gpt4_nov as ge
 import write_file as w
+from ikyet_render.models.gpt import gpt3 as g, gpt4 as ge
 
 with open('config.yml', 'r', encoding='utf-8') as config_file:
     config = yaml.safe_load(config_file)
@@ -81,7 +81,7 @@ async def filepath(prompt):
         """ + '/n',
         specs
     )
-    print("specs:", specs, "this is filepaths:",filepaths_string)
+    print("specs:", specs, "this is filepaths:", filepaths_string)
     return filepaths_string, specs
 
 

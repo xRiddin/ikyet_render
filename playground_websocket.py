@@ -2,24 +2,27 @@ import csv
 import os
 import re
 import urllib.request
+
 import PyPDF2
 import ebooklib
 import requests
 import xlrd
 import yaml
 from ebooklib import epub
-from models.claude2_file import file as cl
-from models.gpt3_nov import generate as g
-from models.gpt4_nov import generate as g4
-from models.gpt_nov import generate as gt
-from models.image_ocr import kosmos as ocr
-from models.sdxl import gen as d
-from models.music_gen import music as m
-from models.tts import generate as tts
+
 # from models.mj import mj
 import ppt as p
-from research_agent import ResearchAgent
 import yt
+from models.claude2_file import file as cl
+from ikyet_render.models.gpt.gpt3 import generate as g
+from ikyet_render.models.gpt.gpt4 import generate as g4
+from ikyet_render.models.gpt.gpt_messages import generate as gt
+from models.image_ocr import kosmos as ocr
+from models.music_gen import music as m
+from models.sdxl import gen as d
+from models.tts import generate as tts
+from research_agent import ResearchAgent
+
 with open('config.yml', 'r', encoding='utf-8') as config_file:
     config = yaml.safe_load(config_file)
     rewrite = config['re_write']
@@ -78,13 +81,16 @@ class PlayGrd:
                 return file
             elif '/imagine' in self.prompt:
                 text = self.prompt
-                await self.websocket.send_json({'type': "logs", 'output': f'🤔 Imagining {text.replace("/imagine", "" )}..'})
+                await self.websocket.send_json(
+                    {'type': "logs", 'output': f'🤔 Imagining {text.replace("/imagine", "")}..'})
                 await self.imagine(text.replace("/imagine", ""))
-                await self.websocket.send_json({'type': 'logs', 'output': '✅ Image generated. Click on the download button.'})
+                await self.websocket.send_json(
+                    {'type': 'logs', 'output': '✅ Image generated. Click on the download button.'})
                 return
             elif '/ppt' in self.prompt:
                 text = self.prompt
-                await self.websocket.send_json({'type': 'logs', 'output': f"👨‍🍳 cooking up a masterpiece in PowerPoint's kitchen..."})
+                await self.websocket.send_json(
+                    {'type': 'logs', 'output': f"👨‍🍳 cooking up a masterpiece in PowerPoint's kitchen..."})
                 ppt = await p.slides(text.replace('/ppt', ''), self.dire)
                 await self.websocket.send_json({'type': 'logs', 'output': '✅ PowerPoint Presentation generated.'})
                 await self.websocket.send_json({'type': 'link', 'output': ppt})
@@ -121,7 +127,8 @@ class PlayGrd:
                 await self.websocket.send_json({'type': 'logs', 'output': 'Making music...'})
                 mus = m(self.prompt.replace('/music', ''), self.dire)
                 if mus:
-                    await self.websocket.send_json({'type': 'logs', 'output': 'music created. click on download button'})
+                    await self.websocket.send_json(
+                        {'type': 'logs', 'output': 'music created. click on download button'})
                 else:
                     await self.websocket.send_json({'type': 'logs', 'output': 'Error. check the console for more info'})
                 return
@@ -135,7 +142,6 @@ class PlayGrd:
             else:
                 resp = g(sparkle, self.prompt)
                 return resp
-
 
     async def web_re(self, prompt):
         assistant = ResearchAgent(prompt, self.agent, self.dire, self.websocket)
@@ -159,7 +165,8 @@ class PlayGrd:
         urllib.request.install_opener(opener)
         urllib.request.urlretrieve(tt, f"{self.dire}/audio.mp3")
         """
-        await self.websocket.send_json({'type': 'logs', 'output': " ✅Audio recorded, you can now click on the download button ⬇..."})
+        await self.websocket.send_json(
+            {'type': 'logs', 'output': " ✅Audio recorded, you can now click on the download button ⬇..."})
         await self.websocket.send_json({'type': 'path', 'output': tt})
 
     async def cont(self, messages):
@@ -177,7 +184,8 @@ F: [Write Chapter #] - Compose a new chapter, where # is the chapter number.
 G: [Outline Character Arc #] - Summarize and outline the plot curve for Character #, where # is the character name or 'main' for the main character.
 
 
-Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answer now state only the following then wait: Hi I am Jane Quill and I want to write a book based upon your concept, keywords and genre. Please provide this information.""", messages)
+Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answer now state only the following then wait: Hi I am Jane Quill and I want to write a book based upon your concept, keywords and genre. Please provide this information.""",
+                 messages)
         return res
 
     async def file_input(self, prompt, dire):
@@ -223,7 +231,7 @@ Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answe
         await self.websocket.send_json({'type': 'logs', 'output': 'Working on the picture 🖼️...Hold on!'})
         matches = re.search(r"--ar (\d+):(\d+)", summary)
         print(matches.group(1), matches.group(2))
-        resp = d(summary, int(matches.group(1))*80, int(matches.group(2))*80)
+        resp = d(summary, int(matches.group(1)) * 80, int(matches.group(2)) * 80)
         os.makedirs(self.dire)
         urllib.request.urlretrieve(resp, f"{self.dire}/image.png")
         files = {'file': open(f"{self.dire}/image.png", 'rb')}
@@ -257,7 +265,8 @@ Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answe
             except Exception as e:
                 print(e)
                 await self.websocket.send_json({'type': 'output', 'output': e})
-            await self.websocket.send_json({'type': 'logs', 'output': '✅Image generated. Click on the download button.'})
+            await self.websocket.send_json(
+                {'type': 'logs', 'output': '✅Image generated. Click on the download button.'})
             await self.websocket.send_json({'type': 'path', 'output': f'{self.dire}/image.png'})
             return
         else:
@@ -268,7 +277,7 @@ Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answe
                 print(img)
                 await self.websocket.send_json({'type': 'logs', 'output': f'Working on the picture {i} 🖼️...Hold on!'})
                 match = re.search(r"--ar (\d+):(\d+)", img)
-                resp = d(img, int(match.group(1))*80, int(match.group(1))*80)
+                resp = d(img, int(match.group(1)) * 80, int(match.group(1)) * 80)
                 urllib.request.urlretrieve(resp, f"{self.dire}/image{i}.png")
                 files = {'file': open(f"{self.dire}/image{i}.png", 'rb')}
                 try:
@@ -279,7 +288,8 @@ Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answe
                 except Exception as e:
                     print(e)
                     await self.websocket.send_json({'type': 'output', 'output': e})
-                await self.websocket.send_json({'type': 'logs', 'output': '✅Image generated. Click on the download button.'})
+                await self.websocket.send_json(
+                    {'type': 'logs', 'output': '✅Image generated. Click on the download button.'})
                 await self.websocket.send_json({'type': 'path', 'output': f'{self.dire}/image{i}.png'})
             return
 

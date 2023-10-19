@@ -16,24 +16,25 @@
 @import "./options.css";
 @import "./theme-toggler.css";
 @import "./checkbox1.css";
+
 @media screen and (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-  }
+    .navbar {
+        flex-direction: column;
+    }
 
-  .nav-links {
-    flex-direction: column;
-  }
+    .nav-links {
+        flex-direction: column;
+    }
 
-  .main-container {
-    flex-direction: column-reverse;
-  }
+    .main-container {
+        flex-direction: column-reverse;
+    }
 
-  .sidebar, .conversation {
-    width: 100%;
-  }
+    .sidebar, .conversation {
+        width: 100%;
+    }
 
-  .mobile-sidebar {
-    display: block;
-  }
+    .mobile-sidebar {
+        display: block;
+    }
 }

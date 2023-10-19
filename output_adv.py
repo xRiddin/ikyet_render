@@ -4,8 +4,8 @@ import time
 
 import yaml
 
-from models import gpt3_nov as g, gpt4_nov as ge
 import write_file as w
+from ikyet_render.models.gpt import gpt3 as g, gpt4 as ge
 
 with open('config.yml', 'r', encoding='utf-8') as config_file:
     config = yaml.safe_load(config_file)
@@ -21,13 +21,15 @@ with open('config.yml', 'r', encoding='utf-8') as config_file:
 
 async def final(prompt, dire, websocket):
     file = []
-    await websocket.send_json({'type': 'logs', 'output': " 📄 An architect is currently engaged in the process of designing the application's blueprint..."})
+    await websocket.send_json({'type': 'logs',
+                               'output': " 📄 An architect is currently engaged in the process of designing the application's blueprint..."})
     filepaths, specs = await filepath(prompt)
     await websocket.send_json({'type': 'output', 'output': specs})
     pattern = r"'([^']+)'\s*"
     filenames = re.findall(pattern, filepaths)
     print(len(filenames))
-    await websocket.send_json({'type': 'logs', 'output': " 🧑‍💻 Our engineers ⚙️ are actively engaged in developing the software..."})
+    await websocket.send_json(
+        {'type': 'logs', 'output': " 🧑‍💻 Our engineers ⚙️ are actively engaged in developing the software..."})
     for _ in range(len(filenames)):
         print(filenames[_])
         await websocket.send_json({'type': 'logs', 'output': f'🧑‍💻 Our coder working on file number: {_}'})
@@ -35,7 +37,8 @@ async def final(prompt, dire, websocket):
         file.append(final_code)
         await websocket.send_json({'type': 'output', 'output': final_code})
     await websocket.send_json({'type': 'logs', 'output': ', '.join(file)})
-    await websocket.send_json({'type': 'logs', 'output': ' 👩‍💻Testers are developing unit tests for the developed software...'})
+    await websocket.send_json(
+        {'type': 'logs', 'output': ' 👩‍💻Testers are developing unit tests for the developed software...'})
     unit_t = await unit_test(filepath_string=filepaths, fi_nal=specs, direct=dire)
     await websocket.send_json({'type': 'output', 'output': unit_t})
 
@@ -43,7 +46,7 @@ async def final(prompt, dire, websocket):
 async def gpt41(file, specs, direct):
     while True:
         try:
-            final_code = ge.generate( gpt4, f"""
+            final_code = ge.generate(gpt4, f"""
             these are the specifications for the files {specs},
             and this is the only file you should edit:{file}:
             """)

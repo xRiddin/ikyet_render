@@ -40,7 +40,6 @@ class WebSocketManager:
 
 
 async def run_agent(task, report_type, agent, agent_role_prompt, websocket):
-
     start_time = datetime.datetime.now()
 
     # await websocket.send_json({"type": "logs", "output": f"Start time: {str(start_time)}\n\n"})

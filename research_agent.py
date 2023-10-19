@@ -6,7 +6,9 @@ import os
 # libraries
 import asyncio
 
+from ikyet_render.models.gpt.gpt_messages import generate as ge
 from models.web import prompts
+from models.web.config import Config
 from models.web.text import \
     write_to_file, \
     create_message, \
@@ -14,9 +16,9 @@ from models.web.text import \
     write_md_to_pdf
 from models.web.web_scrape import async_browse
 from models.web.web_search import web_search
-from models.gpt_nova import generate as ge
-from models.web.config import Config
+
 CFG = Config()
+
 
 class ResearchAgent:
     def __init__(self, question, agent, dire, websocket):
@@ -67,7 +69,8 @@ class ResearchAgent:
     async def call_agent(self, action):
         messages = [{
             "role": "system",
-            "content": self.agent_role_prompt if self.agent_role_prompt else prompts.generate_agent_role_prompt(self.agent)
+            "content": self.agent_role_prompt if self.agent_role_prompt else prompts.generate_agent_role_prompt(
+                self.agent)
         }, {
             "role": "user",
             "content": action,
@@ -133,7 +136,8 @@ class ResearchAgent:
         Returns: list[str]: The concepts for the given question
         """
         result = self.call_agent(prompts.generate_concepts_prompt(self.question, self.research_summary))
-        await self.websocket.send_json({"type": "logs", "output": f"I will research based on the following concepts: {result}\n"})
+        await self.websocket.send_json(
+            {"type": "logs", "output": f"I will research based on the following concepts: {result}\n"})
         return json.loads(result)
 
     async def write_report(self, report_type):

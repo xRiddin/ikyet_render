@@ -1,5 +1,6 @@
-from gradio_client import Client
 import ast
+
+from gradio_client import Client
 
 
 def kosmos(url):
@@ -18,8 +19,9 @@ def kosmos(url):
 
 def clipi2(url):
     client = Client("https://fffiloni-clip-interrogator-2.hf.space/")
-    result = client.predict(url, "best",  2,  # int | float (numeric value between 2 and 24) in 'best mode max flavors' Slider component
-        api_name="/clipi2")
+    result = client.predict(url, "best", 2,
+                            # int | float (numeric value between 2 and 24) in 'best mode max flavors' Slider component
+                            api_name="/clipi2")
     # (classic, fast, best)
     print(result)
     output = result[0]

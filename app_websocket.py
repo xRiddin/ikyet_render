@@ -1,16 +1,19 @@
-import os, time, yaml, tiktoken
-import uvicorn
-import threading
+import os
 import shutil
 import tempfile
+import threading
+import tiktoken
+import time
+import yaml
 from typing import List
 
+import uvicorn
 from fastapi import FastAPI, File, UploadFile, WebSocket, WebSocketDisconnect, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from models.gpt_nova import generate as g
 
+from ikyet_render.models.gpt.gpt_messages import generate as g
 from output_adv import final as m
 from output_quick import director
 from output_quick import final as n
@@ -33,6 +36,7 @@ with open('config.yml', 'r', encoding='utf-8') as config_file:
 
 messages = [{'role': 'system', 'content': jenn}]
 websocket_connections = {}
+
 
 @app.get("/")
 async def index(request: Request):
@@ -80,7 +84,7 @@ async def playgrd(websocket: WebSocket):
 @app.websocket("/jen")
 async def jen(websocket: WebSocket):
     await websocket.accept()
-    #websocket_connections[client_id] = websocket
+    # websocket_connections[client_id] = websocket
     while True:
         try:
             data = await websocket.receive_json()
@@ -99,7 +103,7 @@ async def jen(websocket: WebSocket):
             await websocket.send_json({'output': res})
         except WebSocketDisconnect:
             print("websocket disconnected")
-            #del websocket_connections[client_id]
+            # del websocket_connections[client_id]
             await websocket.close()
             break
 
@@ -168,8 +172,8 @@ async def download():
     finally:
         threading.Thread(target=delayed_delete, args=(directory_path,)).start()
     # finally:
-        # shutil.rmtree(temp_dir)
-        # shutil.rmtree(directory_path)
+    # shutil.rmtree(temp_dir)
+    # shutil.rmtree(directory_path)
 
 
 def delayed_delete(*paths):
@@ -188,6 +192,7 @@ def get_directory():
 def generate_directory_name():
     directory = director()
     return directory
+
 
 def tokens(message):
     encoding = tiktoken.get_encoding("cl100k_base")

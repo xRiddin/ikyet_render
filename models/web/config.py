@@ -28,7 +28,6 @@ class Config():
 
         self.memory_backend = "local"
 
-
     def set_fast_llm_model(self, value: str) -> None:
         """Set the fast LLM model value."""
         self.fast_llm_model = value
@@ -56,4 +55,3 @@ class Config():
     def set_debug_mode(self, value: bool) -> None:
         """Set the debug mode value."""
         self.debug_mode = value
-

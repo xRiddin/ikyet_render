@@ -6,7 +6,7 @@ from typing import Dict, Generator, Optional
 from md2pdf.core import md2pdf
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from ..gpt_nova import generate as ge
+from ikyet_render.models.gpt.gpt_messages import generate as ge
 
 
 def split_text(text: str, max_length: int = 8192) -> Generator[str, None, None]:
@@ -40,7 +40,7 @@ def split_text(text: str, max_length: int = 8192) -> Generator[str, None, None]:
 
 
 def summarize_text(
-    url: str, text: str, question: str, driver: Optional[WebDriver] = None
+        url: str, text: str, question: str, driver: Optional[WebDriver] = None
 ) -> str:
     """Summarize text using the OpenAI API
 
@@ -66,7 +66,7 @@ def summarize_text(
 
         memory_to_add = f"Source: {url}\n" f"Raw content part#{i + 1}: {chunk}"
 
-        #MEMORY.add_documents([Document(page_content=memory_to_add)])
+        # MEMORY.add_documents([Document(page_content=memory_to_add)])
 
         messages = [create_message(chunk, question)]
 
@@ -77,8 +77,7 @@ def summarize_text(
         summaries.append(summary)
         memory_to_add = f"Source: {url}\n" f"Content summary part#{i + 1}: {summary}"
 
-        #MEMORY.add_documents([Document(page_content=memory_to_add)])
-
+        # MEMORY.add_documents([Document(page_content=memory_to_add)])
 
     combined_summary = "\n".join(summaries)
     messages = [create_message(combined_summary, question)]
@@ -117,10 +116,11 @@ def create_message(chunk: str, question: str) -> Dict[str, str]:
     return {
         "role": "user",
         "content": f'"""{chunk}""" Using the above text, answer the following'
-        f' question: "{question}" -- if the question cannot be answered using the text,'
-        " simply elaborate the information on the text in depth and write very long answers. "
-        "Include all factual information, numbers, stats etc if available.",
+                   f' question: "{question}" -- if the question cannot be answered using the text,'
+                   " simply elaborate the information on the text in depth and write very long answers. "
+                   "Include all factual information, numbers, stats etc if available.",
     }
+
 
 def write_to_file(filename: str, text: str) -> None:
     """Write text to a file
@@ -132,6 +132,7 @@ def write_to_file(filename: str, text: str) -> None:
     with open(filename, "w") as file:
         file.write(text)
 
+
 async def write_md_to_pdf(task: str, directory_name: str, text: str) -> None:
     file_path = f"{directory_name}/{task}"
     write_to_file(f"{file_path}.md", text)
@@ -141,6 +142,7 @@ async def write_md_to_pdf(task: str, directory_name: str, text: str) -> None:
     encoded_file_path = urllib.parse.quote(f"{file_path}.pdf")
 
     return encoded_file_path
+
 
 def read_txt_files(directory):
     all_text = ''
