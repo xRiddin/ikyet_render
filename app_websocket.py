@@ -13,7 +13,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from ikyet_render.models.gpt.gpt_messages import generate as g
+from models.gpt.gpt_messages import generate as g
 from output_adv import final as m
 from output_quick import director
 from output_quick import final as n

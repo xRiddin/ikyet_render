@@ -5,7 +5,7 @@ import time
 import yaml
 
 import write_file as w
-from ikyet_render.models.gpt import gpt3 as g, gpt4 as ge
+from models.gpt import gpt3 as g, gpt4 as ge
 
 with open('config.yml', 'r', encoding='utf-8') as config_file:
     config = yaml.safe_load(config_file)

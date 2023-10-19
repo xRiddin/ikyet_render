@@ -14,9 +14,9 @@ from ebooklib import epub
 import ppt as p
 import yt
 from models.claude2_file import file as cl
-from ikyet_render.models.gpt.gpt3 import generate as g
-from ikyet_render.models.gpt.gpt4 import generate as g4
-from ikyet_render.models.gpt.gpt_messages import generate as gt
+from models.gpt.gpt3 import generate as g
+from models.gpt.gpt4 import generate as g4
+from models.gpt.gpt_messages import generate as gt
 from models.image_ocr import kosmos as ocr
 from models.music_gen import music as m
 from models.sdxl import gen as d

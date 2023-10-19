@@ -6,7 +6,7 @@ import os
 # libraries
 import asyncio
 
-from ikyet_render.models.gpt.gpt_messages import generate as ge
+from models.gpt.gpt_messages import generate as ge
 from models.web import prompts
 from models.web.config import Config
 from models.web.text import \
