@@ -166,7 +166,7 @@ class PlayGrd:
         urllib.request.urlretrieve(tt, f"{self.dire}/audio.mp3")
         """
         await self.websocket.send_json(
-            {'type': 'logs', 'output': " ✅Audio recorded, you can now click on the download button ⬇..."})
+            {'type': 'logs', 'output': f" ✅Audio recorded, you can now click on the download button ⬇...{tt}"})
         await self.websocket.send_json({'type': 'path', 'output': tt})
 
     async def cont(self, messages):
