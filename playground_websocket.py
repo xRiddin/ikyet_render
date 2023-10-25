@@ -158,7 +158,7 @@ class PlayGrd:
         if match:
             tt = tts(self.prompt.replace(match.group(1), ''), self.dire, match.group(1))
         else:
-            tt = tts(self.prompt.replace(match.group(1), ''), self.dire, "Charlotte")
+            tt = tts(self.prompt.replace('/tts', ''), self.dire, "Charlotte")
             """
         opener = urllib.request.build_opener()
         opener.addheaders = [('User-agent', 'Mozilla/5.0')]
