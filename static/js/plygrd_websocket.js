@@ -230,7 +230,7 @@ const writeOutput = (data, converter) => {
 
 const updateDownloadLink = (data) => {
     const path = data.output;
-    const downloadLink = document.getElementById("downloadLink");
+    const downloadLink = document.getElementById("download_button");
     downloadLink.href = path;
 };
 
