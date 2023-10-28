@@ -20,6 +20,7 @@ from models.gpt.gpt_messages import generate as gt
 from models.image_ocr import kosmos as ocr
 from models.music_gen import music as m
 from models.sdxl import gen as d
+from models.llava import llava as ll
 from models.tts import generate as tts
 from research_agent import ResearchAgent
 
@@ -76,7 +77,7 @@ class PlayGrd:
                 await self.websocket.send_json({"type": "output", "output": result})
                 return result
             elif '/input' in self.prompt:
-                await self.websocket.send_json({'type': 'logs', 'output': 'Analyzing the files...'})
+                await self.websocket.send_json({'type': 'logs', 'output': '🧑‍💻Analyzing the file...'})
                 file = await self.file_input(self.prompt, self.dire)
                 return file
             elif '/imagine' in self.prompt:
@@ -199,6 +200,9 @@ Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answe
             resp = await self.read_epub(file_path)
             respo = self.claude(resp)
             return respo
+        elif filename.lower().endswith('.jpg' or '.jpeg' or '.png') and os.path.isfile(file_path) and '/ll' in prompt:
+            resp = ll(prompt.replace('/input /ll', ''), dire)
+            return resp
         elif filename.lower().endswith('.jpg' or '.jpeg' or '.png') and os.path.isfile(file_path):
             resp = ocr(file_path)
             return resp
@@ -216,7 +220,7 @@ Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answe
             respo = g4(files, prompt + resp)
             return respo
         else:
-            await self.websocket.send_json("invalid format")
+            await self.websocket.send_json({'type': 'logs', 'output': "file format not supported"})
             return "error"
 
     def claude(self, content):
