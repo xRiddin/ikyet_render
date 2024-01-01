@@ -32,12 +32,12 @@ def generate(sys, user):
 
 
 def nova(sys, user):
-    print("this is for gpt nova")
-    openai.api_base = 'https://api.nova-oss.com/v1'
-    openai.api_key = 'nv2-jtZwohKYBXLUpoMjeU84_NOVA_v2_0bdZXg16HJqPv7h5KUzB'
+    print("this is for gpt oxy")
+    openai.api_base = 'https://app.oxyapi.uk/v1'
+    openai.api_key = 'oxy-Ap5tjmgYuXwL0lgsNrkO2OJQtT4BmjpNaeUKWax5h9yGm'
     try:
         response = openai.ChatCompletion.create(
-            model='gpt-4',
+            model='gpt-4-0314',
             messages=[
                 {
                     'role': 'system', 'content': sys

@@ -46,8 +46,8 @@ def generate(messages, model):
 
 def nova(messages, model):
     print("this is for gpt nova")
-    openai.api_base = 'https://api.nova-oss.com/v1'
-    openai.api_key = 'nv-QcufbFJJPucp91LI4hr2N0V4x0SScIHsbkjdlWvbjWUhyMcx'
+    openai.api_base = 'https://app.oxyapi.uk/v1'
+    openai.api_key = 'oxy-Ap5tjmgYuXwL0lgsNrkO2OJQtT4BmjpNaeUKWax5h9yGm'
     try:
         response = openai.ChatCompletion.create(
             model=model,

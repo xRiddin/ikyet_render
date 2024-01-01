@@ -13,9 +13,11 @@ def generate(sys, user):
             if num_tokens > 16000:
                 new_messages = nova("summarize the messages", user)
                 user = new_messages
+            """
             if num_tokens < 20:
                 print("this is llama 70b")
                 return g(sys, user)
+            """
             res = nova(sys, user)
             if res is False:
                 res = naga(sys, user)
@@ -32,12 +34,12 @@ def generate(sys, user):
 
 
 def nova(sys, user):
-    print("this is for gpt nova")
-    openai.api_base = 'https://api.nova-oss.com/v1'
-    openai.api_key = 'nv2-jtZwohKYBXLUpoMjeU84_NOVA_v2_0bdZXg16HJqPv7h5KUzB'
+    print("this is for gpt oxy")
+    openai.api_base = 'https://app.oxyapi.uk/v1'
+    openai.api_key = 'oxy-Ap5tjmgYuXwL0lgsNrkO2OJQtT4BmjpNaeUKWax5h9yGm'
     try:
         response = openai.ChatCompletion.create(
-            model='gpt-3.5-turbo-16k-0613',
+            model='gpt-3.5-turbo-16k',
             messages=[
                 {
                     'role': 'system', 'content': sys
