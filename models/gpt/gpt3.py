@@ -59,6 +59,32 @@ def nova(sys, user):
         return False
 
 
+def ai(sys, user):
+    print("this is for gpt ai")
+    openai.api_key = 'ht-ct93pyy1ukyqcqp8bsalsiptkncmsz1e914k8sm6d77dov'
+    openai.api_base = 'https://api.hentaigpt.xyz/v1'
+    try:
+        response = openai.ChatCompletion.create(
+            model='gpt-3.5-turbo-16k',
+            messages=[
+                {
+                    'role': 'system', 'content': sys
+                },
+                {
+                    'role': 'user', 'content': user
+                }
+            ],
+            temperature=0.7
+        )
+        choices = response['choices']
+        res = choices[0]['message']['content']
+        print(res)
+        return res
+    except Exception as e:
+        print(e)
+        return False
+
+
 def naga(sys, user):
     print("this is for gpt naga")
     openai.api_base = 'https://api.naga.ac/v1'

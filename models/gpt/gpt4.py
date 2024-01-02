@@ -13,10 +13,16 @@ def generate(sys, user):
             if num_tokens > 8000:
                 new_messages = nova("summarize the messages", user)
                 user = new_messages
+            """
             if num_tokens < 10:
                 print("this is llama 70b")
                 return g(sys, user)
+            """
             res = nova(sys, user)
+            if res is False:
+                res = ai(sys, user)
+            else:
+                return res
             if res is False:
                 res = zuki(sys, user)
             else:
@@ -35,6 +41,31 @@ def nova(sys, user):
     print("this is for gpt oxy")
     openai.api_base = 'https://app.oxyapi.uk/v1'
     openai.api_key = 'oxy-Ap5tjmgYuXwL0lgsNrkO2OJQtT4BmjpNaeUKWax5h9yGm'
+    try:
+        response = openai.ChatCompletion.create(
+            model='gpt-4-0314',
+            messages=[
+                {
+                    'role': 'system', 'content': sys
+                },
+                {
+                    'role': 'user', 'content': user
+                }
+            ],
+            temperature=0.7
+        )
+        choices = response['choices']
+        res = choices[0]['message']['content']
+        print(res)
+        return res
+    except Exception as e:
+        print(e)
+        return False
+
+def ai(sys, user):
+    print("this is for gpt ai")
+    openai.api_key = 'ht-ct93pyy1ukyqcqp8bsalsiptkncmsz1e914k8sm6d77dov'
+    openai.api_base = 'https://api.hentaigpt.xyz/v1'
     try:
         response = openai.ChatCompletion.create(
             model='gpt-4-0314',
