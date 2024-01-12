@@ -55,7 +55,7 @@ multidict
 mypy-extensions
 nodeenv
 numexpr
-openai
+openai==0.27.8
 openapi-schema-pydantic
 outcome
 packaging
