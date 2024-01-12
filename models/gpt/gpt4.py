@@ -3,7 +3,7 @@ import time
 import openai
 import tiktoken
 
-from ..llama2 import generate as g
+#from ..llama2 import generate as g
 
 
 def generate(sys, user):
@@ -11,39 +11,47 @@ def generate(sys, user):
         try:
             num_tokens = tokens(user)
             if num_tokens > 8000:
-                new_messages = nova("summarize the messages", user)
+                new_messages = oxy("summarize the messages", user)
                 user = new_messages
             """
             if num_tokens < 10:
                 print("this is llama 70b")
                 return g(sys, user)
             """
-            res = nova(sys, user)
-            if res is False:
-                res = ai(sys, user)
-            else:
+            res = oxy(sys, user)
+            if res:
                 return res
-            if res is False:
-                res = zuki(sys, user)
             else:
-                return res
-            if res is False:
-                res = naga(sys, user)
-            else:
-                return res
-            return res
+                res = mandril(sys, user)
+                if res:
+                    return res
+                else:
+                    res = ai(sys, user)
+                    if res:
+                        return res
+                    else:
+                        res = zuki(sys, user)
+                        if res:
+                            return res
+                        else:
+                            res = naga(sys, user)
+                            if res:
+                                return res
+                            else:
+                                print(e, 'retrying in 10 sec')
+                                time.sleep(10)
         except Exception as e:
             print(e, 'retrying in 10 sec')
             time.sleep(10)
 
 
-def nova(sys, user):
-    print("this is for gpt oxy")
-    openai.api_base = 'https://app.oxyapi.uk/v1'
-    openai.api_key = 'oxy-Ap5tjmgYuXwL0lgsNrkO2OJQtT4BmjpNaeUKWax5h9yGm'
+def generate_response(api_base, api_key, sys, user, model):
+    print(f"this is for {api_base}")
+    openai.api_base = api_base
+    openai.api_key = api_key
     try:
         response = openai.ChatCompletion.create(
-            model='gpt-4-0314',
+            model=model,
             messages=[
                 {
                     'role': 'system', 'content': sys
@@ -62,83 +70,25 @@ def nova(sys, user):
         print(e)
         return False
 
+
+def oxy(sys, user):
+    return generate_response('https://app.oxyapi.uk/v1', 'oxy-Ap5tjmgYuXwL0lgsNrkO2OJQtT4BmjpNaeUKWax5h9yGm', sys, user, 'gpt-4-0314')
+
+
 def ai(sys, user):
-    print("this is for gpt ai")
-    openai.api_key = 'ht-ct93pyy1ukyqcqp8bsalsiptkncmsz1e914k8sm6d77dov'
-    openai.api_base = 'https://api.hentaigpt.xyz/v1'
-    try:
-        response = openai.ChatCompletion.create(
-            model='gpt-4-0314',
-            messages=[
-                {
-                    'role': 'system', 'content': sys
-                },
-                {
-                    'role': 'user', 'content': user
-                }
-            ],
-            temperature=0.7
-        )
-        choices = response['choices']
-        res = choices[0]['message']['content']
-        print(res)
-        return res
-    except Exception as e:
-        print(e)
-        return False
+    return generate_response('https://api.hentaigpt.xyz/v1', 'ht-ct93pyy1ukyqcqp8bsalsiptkncmsz1e914k8sm6d77dov', sys, user, 'gpt-4-0314')
 
 
 def naga(sys, user):
-    print("this is for gpt naga")
-    openai.api_base = 'https://api.naga.ac/v1'
-    openai.api_key = '_1odz14jRUhEDXaEBU2NHQxl6gaUlX_LsKNR3_cAWW8'
-    try:
-        response = openai.ChatCompletion.create(
-            model='gpt-3.5-turbo-16k-0613',
-            messages=[
-                {
-                    'role': 'system', 'content': sys
-                },
-                {
-                    'role': 'user', 'content': user
-                }
-            ],
-            temperature=0.7
-        )
-        choices = response['choices']
-        res = choices[0]['message']['content']
-        print(res)
-        return res
-    except Exception as e:
-        print(e)
-        return False
+    return generate_response('https://api.naga.ac/v1', '_1odz14jRUhEDXaEBU2NHQxl6gaUlX_LsKNR3_cAWW8', sys, user, 'gpt-3.5-turbo-16k-0613')
 
 
 def zuki(sys, user):
-    print("this is for zukij")
-    openai.api_base = 'https://zukijourney.xyzbot.net'
-    openai.api_key = 'zu-90c043196ee79f73789e7cc289aab6f9'
-    try:
-        response = openai.ChatCompletion.create(
-            model='gpt-4',
-            messages=[
-                {
-                    'role': 'system', 'content': sys
-                },
-                {
-                    'role': 'user', 'content': user
-                }
-            ],
-            temperature=0.7
-        )
-        choices = response['choices']
-        res = choices[0]['message']['content']
-        print(res)
-        return res
-    except Exception as e:
-        print(e)
-        return False
+    return generate_response('https://zukijourney.xyzbot.net', 'zu-90c043196ee79f73789e7cc289aab6f9', sys, user, 'gpt-4')
 
+
+def mandril(sys, user):
+    return generate_response('https://api.mandrillai.tech/v1', 'md-ZawlujQfMIgjbfRFFMnVTUiqGAuOzMAcqufbniKpbWdpzFQA', sys, user, 'gpt-4')
 
 def tokens(message):
     encoding = tiktoken.get_encoding("cl100k_base")

@@ -143,6 +143,9 @@ class PlayGrd:
             else:
                 resp = g(sparkle, self.prompt)
                 return resp
+        if self.agent is 'gpt4':
+            resp = g4(syst, self.prompt)
+            return resp
 
     async def web_re(self, prompt):
         assistant = ResearchAgent(prompt, self.agent, self.dire, self.websocket)
