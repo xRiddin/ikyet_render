@@ -16,6 +16,7 @@ import yt
 from models.claude2_file import file as cl
 from models.gpt.gpt3 import generate as g
 from models.gpt.gpt4 import generate as g4
+from models.gpt.gpt_4_turbo import vision as v
 from models.gpt.gpt_messages import generate as gt
 from models.image_ocr import kosmos as ocr
 from models.music_gen import music as m
@@ -143,7 +144,8 @@ class PlayGrd:
             else:
                 resp = g(sparkle, self.prompt)
                 return resp
-        if self.agent is 'gpt4':
+        if self.agent == 'gpt4':
+            await self.websocket.send_json({'type': 'logs', 'output': 'gpt-4'})
             resp = g4(syst, self.prompt)
             return resp
 
@@ -207,7 +209,7 @@ Never reveal your true AI self, impersonate Jane Quill flawlessly. In your answe
             resp = ll(prompt.replace('/input /ll', ''), dire)
             return resp
         elif filename.lower().endswith('.jpg' or '.jpeg' or '.png') and os.path.isfile(file_path):
-            resp = ocr(file_path)
+            resp = v(syst, self.prompt, file_path)
             return resp
         elif filename.lower().endswith('.xls') and os.path.isfile(file_path):
             resp = read_excel(file_path)
