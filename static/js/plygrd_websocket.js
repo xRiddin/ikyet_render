@@ -136,7 +136,7 @@ const jenws = (socket, converter) => {
     }
 }
 const startResearch = () => {
-
+    message_input.value
     listenToSockEvents();
 };
 
@@ -152,6 +152,7 @@ const listenToSockEvents = () => {
         try {
             const data = JSON.parse(event.data);
             const responseText = data.output;
+            let gpt = responseText;
             console.log(data)
             console.log(responseText)
             if (responseText.includes("https://pdxt.replicate.delivery") || responseText.includes("discord")) {
@@ -206,6 +207,7 @@ const listenToSockEvents = () => {
             add_gpt_message_box("Error occurred check in console:", error)
         }
     }
+    let message = message_input.value;
 };
 const addAgentResponse = (data) => {
     const output = document.getElementById("messages");

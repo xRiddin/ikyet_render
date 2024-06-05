@@ -18,7 +18,7 @@ CODE
 Do not comment on what every file does
 Please note that the code should be fully functional. No placeholders.
  Follow a language and framework appropriate best practice file naming convention.
- Make sure that files contain all imports, types etc. Make sure that code in different files are compatible with each other.
+ Make sure that files contain all imports, types.ts etc. Make sure that code in different files are compatible with each other.
  Ensure to implement all code, if you are unsure, write a plausible implementation.
  Include module dependency or package manager dependency definition file.
  Before you finish, double check that all parts of the architecture is present in the files.
@@ -64,7 +64,7 @@ re_write:
 
   Do not comment on what every file does
   Please note that the code should be fully functional. No placeholders.
-  Make sure that files contain all imports, types etc. Make sure that code in different files are compatible with each other.
+  Make sure that files contain all imports, types.ts etc. Make sure that code in different files are compatible with each other.
   Include module dependency or package manager dependency definition file.
   "
 

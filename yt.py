@@ -4,7 +4,7 @@ import requests
 async def yt(link, websockets, is_whisper=False):
     video_id = getVideoId(link)
     i = [
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXRhaWxzIjp7ImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9mb3llci13b3JrIiwiYXVkIjoiZm95ZXItd29yayIsImF1dGhfdGltZSI6MTY5MjY0NDM4MSwidXNlcl9pZCI6Ik5LVUx5TG0xQlZNVTVJcW9ibTA1dUlwWEV4UzIiLCJzdWIiOiJOS1VMeUxtMUJWTVU1SXFvYm0wNXVJcFhFeFMyIiwiaWF0IjoxNjkyNjQ0MzgxLCJleHAiOjE2OTI2NDc5ODEsImVtYWlsIjoibWVrZWxhYzUzNkBjd3RhYS5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWVrZWxhYzUzNkBjd3RhYS5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9LCJ1aWQiOiJOS1VMeUxtMUJWTVU1SXFvYm0wNXVJcFhFeFMyIn0sImlhdCI6MTcwMDkyNzgyNywiZXhwIjoxNzA2MTExODI3fQ.FdSrqT0zgFuq56H6QMro9KkRb1d431S3nkVX4DZNDa0']
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXRhaWxzIjp7InJvbGUiOiJmcmVlIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL2ZveWVyLXdvcmsiLCJhdWQiOiJmb3llci13b3JrIiwiYXV0aF90aW1lIjoxNzA2ODUyMDIxLCJ1c2VyX2lkIjoibjB1cE9DRVlrbmhhT3RlanAxVmxhNm5HNVpEMiIsInN1YiI6Im4wdXBPQ0VZa25oYU90ZWpwMVZsYTZuRzVaRDIiLCJpYXQiOjE3MDY4NTIwOTksImV4cCI6MTcwNjg1NTY5OSwiZW1haWwiOiJwYXIudG9uLmcubG8uYi5hQGdvb2dsZW1haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsicGFyLnRvbi5nLmxvLmIuYUBnb29nbGVtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn0sInVpZCI6Im4wdXBPQ0VZa25oYU90ZWpwMVZsYTZuRzVaRDIifSwiaWF0IjoxNzE3MzM0NjAyLCJleHAiOjE3MjI1MTg2MDJ9.WRrBslRWL7gXWHXebAqVgjxtlgXQ45Pj2MAHbXO4PRM']
     for _ in i:
         resp = requests_yt(video_id, _, is_whisper)
         print(resp)
@@ -55,7 +55,6 @@ async def yt(link, websockets, is_whisper=False):
 
 def requests_yt(video_id, _, is_whisper=False):
     headers = {
-        'authority': 'merlin-uam-yak3s7dv3a-uw.a.run.app',
         'accept': '*/*',
         'accept-language': 'en-GB,en;q=0.6',
         'authorization': f'Bearer {_}',
@@ -86,7 +85,7 @@ def requests_yt(video_id, _, is_whisper=False):
     }
 
     response = requests.post(
-        'https://merlin-uam-yak3s7dv3a-uw.a.run.app/summarize/youtube?&customJWT=true',
+        'https://uam.getmerlin.in/summarize/youtube?&customJWT=true',
         headers=headers,
         json=json_data,
     )
