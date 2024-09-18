@@ -1,6 +1,6 @@
 # Features
 
--> All in One Gpt platform. 
+-> All in One Gpt platform. \n
 -> Chat with different professional AI bots.
 -> Can generate images using SD.
 -> Create AI ppts just from a single prompt. 
