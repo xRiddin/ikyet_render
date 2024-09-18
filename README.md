@@ -12,3 +12,5 @@
 -> Backend: Python
 -> API: FastApi
 -> Frontend: javascript, css, html
+
+### this project has been archived
